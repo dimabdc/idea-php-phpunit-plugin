@@ -23,7 +23,7 @@ import java.util.*;
 public class RelatedTestCaseLineMarkerProvider implements LineMarkerProvider {
     @Nullable
     @Override
-    public LineMarkerInfo getLineMarkerInfo(@NotNull PsiElement element) {
+    public LineMarkerInfo<?> getLineMarkerInfo(@NotNull PsiElement element) {
         return null;
     }
 
@@ -41,7 +41,7 @@ public class RelatedTestCaseLineMarkerProvider implements LineMarkerProvider {
         }
     }
 
-    private Collection<LineMarkerInfo> visitClassName(@NotNull PsiElement psiElement) {
+    private Collection<LineMarkerInfo<PsiElement>> visitClassName(@NotNull PsiElement psiElement) {
         PsiElement phpClass = psiElement.getContext();
         if (!(phpClass instanceof PhpClass) || PhpUnitUtil.isTestClass((PhpClass) phpClass)) {
             return Collections.emptyList();

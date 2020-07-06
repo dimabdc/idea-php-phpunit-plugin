@@ -69,8 +69,7 @@ public class ConstructorMockIntention extends PsiElementBaseIntentionAction {
             return false;
         }
 
-        return PhpElementsUtil.isInstanceOf(phpClass, "\\PHPUnit\\Framework\\TestCase")
-            || PhpElementsUtil.isInstanceOf(phpClass, "\\PHPUnit_Framework_TestCase");
+        return PhpElementsUtil.isInstanceOf(phpClass, "\\PHPUnit\\Framework\\TestCase");
     }
 
     @Nls

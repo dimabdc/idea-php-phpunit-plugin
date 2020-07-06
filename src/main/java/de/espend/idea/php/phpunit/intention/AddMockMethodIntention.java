@@ -34,26 +34,27 @@ public class AddMockMethodIntention extends PsiElementBaseIntentionAction {
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) throws IncorrectOperationException {
         String parameter = getMockInstanceFromMethodReferenceScope(psiElement);
 
-        if(parameter == null) {
+        if (parameter == null) {
             HintManager.getInstance().showErrorHint(editor, "No mock context found");
             return;
         }
 
         Set<String> methods = new TreeSet<>();
         for (PhpClass phpClass : PhpIndex.getInstance(psiElement.getProject()).getAnyByFQN(parameter)) {
-            methods.addAll(phpClass.getMethods().stream()
-                .filter(method -> method.getAccess().isPublic() && !method.getName().startsWith("__"))
-                .map(PhpNamedElement::getName).collect(Collectors.toSet())
+            methods.addAll(
+                    phpClass.getMethods().stream()
+                            .filter(method -> method.getAccess().isPublic() && !method.getName().startsWith("__"))
+                            .map(PhpNamedElement::getName).collect(Collectors.toSet())
             );
         }
 
-        if(methods.size() == 0) {
+        if (methods.size() == 0) {
             HintManager.getInstance().showErrorHint(editor, "No public method found");
             return;
         }
 
         // Single item direct execution without selection
-        if(methods.size() == 1) {
+        if (methods.size() == 1) {
             new MyMockWriteCommand(editor, methods.iterator().next(), psiElement).execute();
             return;
         }
@@ -61,10 +62,10 @@ public class AddMockMethodIntention extends PsiElementBaseIntentionAction {
         final JBList<String> list = new JBList<>(methods);
 
         JBPopupFactory.getInstance().createListPopupBuilder(list)
-            .setTitle("PHPUnit: Mock Method")
-            .setItemChoosenCallback(() -> new MyMockWriteCommand(editor, list.getSelectedValue(), psiElement).execute())
-            .createPopup()
-            .showInBestPositionFor(editor);
+                      .setTitle("PHPUnit: Mock Method")
+                      .setItemChoosenCallback(() -> new MyMockWriteCommand(editor, list.getSelectedValue(), psiElement).execute())
+                      .createPopup()
+                      .showInBestPositionFor(editor);
 
     }
 
@@ -78,19 +79,19 @@ public class AddMockMethodIntention extends PsiElementBaseIntentionAction {
         // $foo = $this->creat<caret>eMock()
         MethodReference methodReference = PsiTreeUtil.getTopmostParentOfType(psiElement, MethodReference.class);
 
-        if(methodReference == null) {
+        if (methodReference == null) {
             // scope outside method reference chaining
             // $f<caret>oo = $this->createMock()
             PsiElement variable = psiElement.getParent();
-            if(variable instanceof Variable) {
+            if (variable instanceof Variable) {
                 PsiElement assignmentExpression = variable.getParent();
-                if(assignmentExpression instanceof AssignmentExpression) {
+                if (assignmentExpression instanceof AssignmentExpression) {
                     methodReference = PsiTreeUtil.getChildOfAnyType(assignmentExpression, MethodReference.class);
                 }
             }
         }
 
-        if(methodReference == null) {
+        if (methodReference == null) {
             return null;
         }
 
@@ -135,13 +136,13 @@ public class AddMockMethodIntention extends PsiElementBaseIntentionAction {
         @Override
         protected void run() {
             Statement statement = PsiTreeUtil.getParentOfType(psiElement, Statement.class);
-            if(statement == null) {
+            if (statement == null) {
                 HintManager.getInstance().showErrorHint(editor, "No mock context found");
                 return;
             }
 
             PhpReference childOfAnyType = PsiTreeUtil.findChildOfAnyType(statement, FieldReference.class, Variable.class);
-            if(childOfAnyType == null) {
+            if (childOfAnyType == null) {
                 return;
             }
 
@@ -150,19 +151,19 @@ public class AddMockMethodIntention extends PsiElementBaseIntentionAction {
             String prefix = childOfAnyType.getText();
 
             Statement methodReference = PhpPsiElementFactory.createStatement(
-                psiElement.getProject(),
-                String.format("%s->method('%s')->willReturn();", prefix, selectedValue)
+                    psiElement.getProject(),
+                    String.format("%s->method('%s')->willReturn();", prefix, selectedValue)
             );
 
             PsiElement add = statement.add(methodReference);
 
             for (MethodReference reference : PsiTreeUtil.getChildrenOfTypeAsList(add, MethodReference.class)) {
-                if(!"willReturn".equals(reference.getName())) {
+                if (!"willReturn".equals(reference.getName())) {
                     continue;
                 }
 
                 PsiElement lastChild = reference.getLastChild();
-                if(lastChild != null) {
+                if (lastChild != null) {
                     editor.getCaretModel().moveToOffset(lastChild.getTextRange().getStartOffset());
                     editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
                 }

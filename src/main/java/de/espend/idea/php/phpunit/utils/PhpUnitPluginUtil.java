@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 public class PhpUnitPluginUtil {
     private static final String[] EXTENDS_TEST_CLASSES = new String[]{
         "\\PHPUnit\\Framework\\TestCase",
-        "\\PHPUnit_Framework_TestCase",
         "\\Symfony\\Bundle\\FrameworkBundle\\Test\\WebTestCase",
         "\\Behat\\Behat\\Context\\BehatContext"
     };
@@ -124,11 +123,9 @@ public class PhpUnitPluginUtil {
         if(parameterList instanceof ParameterList) {
             PsiElement methodReference = parameterList.getParent();
             if(methodReference instanceof MethodReference && (
-                PhpElementsUtil.isMethodReferenceInstanceOf((MethodReference) methodReference, "PHPUnit_Framework_MockObject_MockObject", "method") ||
-                PhpElementsUtil.isMethodReferenceInstanceOf((MethodReference) methodReference, "PHPUnit_Framework_MockObject_Builder_InvocationMocker", "method") ||
-                PhpElementsUtil.isMethodReferenceInstanceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\MockObject", "method") ||
-                PhpElementsUtil.isMethodReferenceInstanceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method") ||
-                PhpElementsUtil.isMethodReferenceInstanceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Stub", "method")
+                PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\MockObject", "method") ||
+                PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method") ||
+                PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Stub", "method")
                 ))
             {
                 return CreateMockMethodReferenceProcessor.createParameter((MethodReference) methodReference);

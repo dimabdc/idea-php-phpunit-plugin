@@ -18,29 +18,15 @@ final public class FilterFactory {
     private FilterFactory() {
         config = new FilterConfig();
         config
-                .add(new FilterConfigItem("PHPUnit_Framework_MockObject_MockBuilder", "setMethods", 1, MockBuilderFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Framework_TestCase", "getMock", 2, MockBuilderFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Framework_TestCase", "getMockClass", 2, MockBuilderFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Framework_TestCase", "getMockForAbstractClass", 7, MockBuilderFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Framework_TestCase", "getMockForTrait", 7, MockBuilderFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Framework_MockObject_Builder_InvocationMocker", "method", 1, InvocationMockerFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Framework_MockObject_MockObject", "method", 1, InvocationMockerFilter.class))
-                .add(new FilterConfigItem("PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method", 1, InvocationMockerFilter.class))
-                .add(new FilterConfigItem("PHPUnit\\Framework\\MockObject\\MockObject", "method", 1, InvocationMockerFilter.class))
-                .add(new FilterConfigItem("MethodMock", "resetMethodCalledStack", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "getCalledArgs", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "isMethodCalled", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "countMethodCalled", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "revertMethod", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "interceptMethodByCode", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "interceptMethod", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "mockMethodResult", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "mockMethodResultByMap", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "revertMethodResult", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("MethodMock", "callProtectedMethod", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Helper", "getProtectedPropertyValue", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Helper", "setProtectedPropertyValue", 2, MethodMockFilter.class))
-                .add(new FilterConfigItem("PHPUnit_Helper", "callProtectedMethod", 2, MethodMockFilter.class));
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\MockObject\\MockBuilder", "setMethods", 1, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\MockObject\\MockBuilder", "onlyMethods", 1, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\MockObject\\MockBuilder", "addMethods", 1, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\TestCase", "getMock", 2, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\TestCase", "getMockClass", 2, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\TestCase", "getMockForAbstractClass", 7, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\TestCase", "getMockForTrait", 7, MockBuilderFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method", 1, InvocationMockerFilter.class))
+                .add(new FilterConfigItem("\\PHPUnit\\Framework\\MockObject\\MockObject", "method", 1, InvocationMockerFilter.class));
     }
 
     public static FilterFactory getInstance() {
@@ -74,7 +60,7 @@ final public class FilterFactory {
         int parameterNumber = phpParameter.getNumber();
 
         do {
-            String className = resolvedClass.getName();
+            String className = resolvedClass.getFQN();
             FilterConfigItem filterConfigItem = config.getItem(className, methodName);
             if (filterConfigItem != null && filterConfigItem.getParameterNumber() == parameterNumber) {
                 Class<?> filterClass = filterConfigItem.getFilterClass();

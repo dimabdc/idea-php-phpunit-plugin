@@ -20,8 +20,7 @@ public class MockProphecyTypeProvider implements PhpTypeProvider3 {
     public static char TRIM_KEY = '\u0192';
 
     private static final Collection<String> PHPUNIT_CLASSES = new HashSet<String>() {{
-        add("\\PHPUnit\\Framework\\TestCase");
-        add("\\PHPUnit_Framework_TestCase");
+        add("\\PHPUnit\\Framework\\TestCase");;
     }};
 
     private static final Collection<String> PROPHESIZE_CLASSES = new HashSet<String>(PHPUNIT_CLASSES) {{

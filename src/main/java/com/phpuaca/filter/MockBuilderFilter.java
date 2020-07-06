@@ -2,9 +2,13 @@ package com.phpuaca.filter;
 
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.jetbrains.php.lang.psi.elements.ParameterList;
+import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpModifier;
 import com.phpuaca.filter.util.ClassFinder;
+import com.phpuaca.filter.util.Result;
 import com.phpuaca.util.PhpArrayParameter;
+
+import java.util.Objects;
 
 public class MockBuilderFilter extends Filter {
 
@@ -19,19 +23,28 @@ public class MockBuilderFilter extends Filter {
 
         MethodReference methodReference = context.getMethodReference();
 
-        ClassFinder.Result classFinderResult = (new ClassFinder()).find(methodReference);
+        Result classFinderResult = (new ClassFinder()).find(methodReference);
         if (classFinderResult != null) {
             setPhpClass(classFinderResult.getPhpClass());
         }
 
-        disallowMethod("__construct");
-        disallowMethod("__destruct");
+        allowMethods();
+        disallowMethod(PhpClass.CONSTRUCTOR);
+        disallowMethod(PhpClass.DESTRUCTOR);
 
-        ParameterList parameterList = methodReference.getParameterList();
-        if (parameterList != null) {
-            PhpArrayParameter phpArrayParameter = PhpArrayParameter.create(parameterList, context.getFilterConfigItem().getParameterNumber());
-            if (phpArrayParameter != null) {
-                describeMethods(phpArrayParameter.getValues());
+        PhpClass phpclass = getPhpClass();
+
+        if (Objects.equals(methodReference.getName(), "addMethods")) {
+            do {
+                describeMethods(phpclass.getOwnMethods());
+            } while ((phpclass = phpclass.getSuperClass()) != null);
+        } else {
+            ParameterList parameterList = methodReference.getParameterList();
+            if (parameterList != null) {
+                PhpArrayParameter phpArrayParameter = PhpArrayParameter.create(parameterList, context.getFilterConfigItem().getParameterNumber());
+                if (phpArrayParameter != null) {
+                    describeMethods(phpArrayParameter.getValues());
+                }
             }
         }
     }

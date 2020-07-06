@@ -9,7 +9,7 @@ public class FilterConfig {
     Map<String, FilterConfigItem> config;
 
     public FilterConfig() {
-        config = new HashMap<String, FilterConfigItem>();
+        config = new HashMap<>();
     }
 
     public FilterConfig(FilterConfig filterConfig) {

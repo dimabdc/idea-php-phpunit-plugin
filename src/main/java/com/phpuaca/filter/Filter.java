@@ -1,29 +1,35 @@
 package com.phpuaca.filter;
 
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocProperty;
-import com.jetbrains.php.lang.psi.elements.Field;
-import com.jetbrains.php.lang.psi.elements.Method;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
-import com.jetbrains.php.lang.psi.elements.PhpModifier;
+import com.jetbrains.php.lang.psi.elements.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 abstract public class Filter {
+    protected String phpMethod;
 
     private boolean isMethodsAllowed = false;
     private boolean isFieldsAllowed = false;
 
-    private List<String> allowedMethods = new ArrayList<String>();
-    private List<String> allowedFields = new ArrayList<String>();
-    private List<String> allowedModifiers = new ArrayList<String>();
-    private List<String> disallowedMethods = new ArrayList<String>();
-    private List<String> describedMethods = new ArrayList<String>();
+    private final List<String> allowedMethods = new ArrayList<>();
+    private final List<String> allowedFields = new ArrayList<>();
+    private final List<String> allowedModifiers = new ArrayList<>();
+    private final List<String> disallowedMethods = new ArrayList<>();
+    private final List<String> describedMethods = new ArrayList<>();
 
     private PhpClass phpClass;
 
-    public Filter(FilterContext context) {
+    public Filter(@NotNull FilterContext context) {
+        MethodReference methodReference = context.getMethodReference();
+        phpMethod = methodReference.getName();
+    }
+
+    public String getPhpMethod() {
+        return phpMethod;
     }
 
     public void allowMethod(String methodName) {
@@ -38,6 +44,12 @@ abstract public class Filter {
         disallowedMethods.add(methodName);
     }
 
+    public void describeMethods(@NotNull Method[] methods) {
+        describeMethods(Arrays.stream(methods)
+                .map(Method::getName)
+                .collect(Collectors.toList()));
+    }
+
     public void describeMethod(String methodName) {
         describedMethods.add(methodName);
     }
@@ -46,7 +58,7 @@ abstract public class Filter {
         allowedModifiers.add(modifierName);
     }
 
-    public void allowModifier(PhpModifier modifier) {
+    public void allowModifier(@NotNull PhpModifier modifier) {
         allowModifier(modifier.toString());
     }
 
@@ -54,13 +66,13 @@ abstract public class Filter {
         isMethodsAllowed = true;
     }
 
-    public void allowMethods(List<String> methodNames) {
+    public void allowMethods(@NotNull List<String> methodNames) {
         for (String methodName : methodNames) {
             allowMethod(methodName);
         }
     }
 
-    public void describeMethods(List<String> methodNames) {
+    public void describeMethods(@NotNull List<String> methodNames) {
         for (String methodName : methodNames) {
             describeMethod(methodName);
         }
@@ -70,11 +82,11 @@ abstract public class Filter {
         isFieldsAllowed = true;
     }
 
-    protected boolean isMethodAllowed(String methodName) {
+    public boolean isMethodAllowed(String methodName) {
         return isMethodsAllowed && !disallowedMethods.contains(methodName) && (allowedMethods.isEmpty() || allowedMethods.contains(methodName));
     }
 
-    public boolean isMethodAllowed(Method method) {
+    public boolean isMethodAllowed(@NotNull Method method) {
         return isMethodAllowed(method.getName()) && isModifierAllowed(method.getModifier());
     }
 
@@ -98,7 +110,7 @@ abstract public class Filter {
         return allowedModifiers.isEmpty() || allowedModifiers.contains(modifierName);
     }
 
-    protected boolean isModifierAllowed(PhpModifier modifier) {
+    protected boolean isModifierAllowed(@NotNull PhpModifier modifier) {
         return isModifierAllowed(modifier.toString());
     }
 

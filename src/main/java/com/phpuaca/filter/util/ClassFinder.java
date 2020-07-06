@@ -15,24 +15,12 @@ final public class ClassFinder {
 
     @Nullable
     public Result find(@NotNull MethodReference methodReference) {
-        String methodNameToFind = "setMethods";
-        MethodReference mockBuilderMethodReference = (new PhpMethodChain(methodReference)).findMethodReference("getMockBuilder");
-        if (mockBuilderMethodReference == null) {
-            String methodName = methodReference.getName();
-            if (methodName != null && (methodName.startsWith("getMock") || methodName.startsWith("createMock"))) {
-                mockBuilderMethodReference = methodReference;
-                if (methodName.startsWith("createMock")) {
-                    methodNameToFind = "getMock";
-                } else {
-                    methodNameToFind = methodName;
-                }
-            }
-        }
-
+        MethodReference mockBuilderMethodReference = getMockBuilderMethodReference(methodReference);
         if (mockBuilderMethodReference == null) {
             return null;
         }
 
+        String methodNameToFind = getMockBuilderMethodName(mockBuilderMethodReference);
         FilterConfigItem filterConfigItem = FilterFactory.getInstance().getConfig().getItem(methodNameToFind);
         if (filterConfigItem == null) {
             return null;
@@ -52,21 +40,33 @@ final public class ClassFinder {
         return methodReference == null ? null : find(methodReference);
     }
 
-    public class Result {
-        private PhpClass phpClass;
-        private int parameterNumber;
-
-        public Result(@NotNull PhpClass phpClass, int parameterNumber) {
-            this.phpClass = phpClass;
-            this.parameterNumber = parameterNumber;
+    @Nullable
+    private MethodReference getMockBuilderMethodReference(@NotNull MethodReference methodReference) {
+        MethodReference mockBuilderMethodReference = (new PhpMethodChain(methodReference)).findMethodReference("getMockBuilder");
+        if (mockBuilderMethodReference != null) {
+            return mockBuilderMethodReference;
         }
 
-        public PhpClass getPhpClass() {
-            return phpClass;
+        String methodName = methodReference.getName();
+        if (methodName != null && (methodName.startsWith("getMock") || methodName.startsWith("createMock"))) {
+            return methodReference;
         }
 
-        public int getParameterNumber() {
-            return parameterNumber;
+        return null;
+    }
+
+    private String getMockBuilderMethodName(@NotNull MethodReference methodReference) {
+        String methodNameToFind = "setMethods";
+
+        String methodName = methodReference.getName();
+        if (methodName != null && !methodName.equals("getMockBuilder") && (methodName.startsWith("getMock") || methodName.startsWith("createMock"))) {
+            if (methodName.startsWith("createMock")) {
+                methodNameToFind = "getMock";
+            } else {
+                methodNameToFind = methodName;
+            }
         }
+
+        return methodNameToFind;
     }
 }

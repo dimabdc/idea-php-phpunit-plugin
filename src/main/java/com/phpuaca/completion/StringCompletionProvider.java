@@ -20,7 +20,7 @@ import java.util.List;
 public class StringCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     @Override
-    protected void addCompletions(@NotNull CompletionParameters completionParameters, ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
+    protected void addCompletions(@NotNull CompletionParameters completionParameters, @NotNull ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
         PsiElement originalPosition = completionParameters.getOriginalPosition();
         if (originalPosition != null) {
             Filter filter = FilterFactory.getInstance().getFilter(originalPosition.getParent());
@@ -32,7 +32,7 @@ public class StringCompletionProvider extends CompletionProvider<CompletionParam
 
     @NotNull
     protected List<LookupElement> getLookupElements(@NotNull Filter filter) {
-        List<LookupElement> list = new ArrayList<LookupElement>();
+        List<LookupElement> list = new ArrayList<>();
         PhpClass phpClass = filter.getPhpClass();
 
         if (phpClass != null) {

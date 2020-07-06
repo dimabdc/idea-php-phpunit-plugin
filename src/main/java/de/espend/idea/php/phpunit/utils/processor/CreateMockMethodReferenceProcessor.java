@@ -21,9 +21,7 @@ public class CreateMockMethodReferenceProcessor implements ChainVisitorUtil.Chai
 
     @Override
     public boolean process(@NotNull MethodReference methodReference) {
-        if(PhpElementsUtil.isMethodReferenceInstanceOf(methodReference,  "\\PHPUnit\\Framework\\TestCase", "createMock") ||
-           PhpElementsUtil.isMethodReferenceInstanceOf(methodReference,  "PHPUnit_Framework_TestCase", "createMock")
-           ) {
+        if(PhpElementsUtil.isMethodReferenceOf(methodReference,  "\\PHPUnit\\Framework\\TestCase", "createMock")) {
 
             PsiElement[] parameters = methodReference.getParameters();
 
@@ -37,8 +35,6 @@ public class CreateMockMethodReferenceProcessor implements ChainVisitorUtil.Chai
         // allowed chain of classes types
         return PhpElementsUtil.isMethodReferenceInstanceOf(
             methodReference,
-            "PHPUnit_Framework_MockObject_MockObject",
-            "PHPUnit_Framework_MockObject_Builder_InvocationMocker",
             "PHPUnit\\Framework\\MockObject\\MockObject",
             "PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker"
         );

@@ -155,7 +155,7 @@ public class PhpElementsUtil {
     /**
      * Resolves MethodReference and compare containing class against implementations instances
      */
-    public static boolean isMethodReferenceInstanceOf(@NotNull MethodReference methodReference, @NotNull String expectedClassName, @NotNull String methodName) {
+    public static boolean isMethodReferenceOf(@NotNull MethodReference methodReference, @NotNull String expectedClassName, @NotNull String methodName) {
         if(!methodName.equals(methodReference.getName())) {
             return false;
         }

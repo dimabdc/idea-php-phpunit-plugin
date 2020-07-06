@@ -32,17 +32,17 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
     }
 
     private void completionContainsAssert(String[] lookupStrings) {
-        if(lookupStrings.length == 0) {
+        if (lookupStrings.length == 0) {
             fail("No lookup element given");
         }
 
         List<String> lookupElements = myFixture.getLookupElementStrings();
-        if(lookupElements == null || lookupElements.size() == 0) {
+        if (lookupElements == null || lookupElements.size() == 0) {
             fail(String.format("failed that empty completion contains %s", Arrays.toString(lookupStrings)));
         }
 
-        for (String s : Arrays.asList(lookupStrings)) {
-            if(!lookupElements.contains(s)) {
+        for (String s : lookupStrings) {
+            if (!lookupElements.contains(s)) {
                 fail(String.format("failed that completion contains %s in %s", s, lookupElements.toString()));
             }
         }
@@ -53,15 +53,15 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
         final List<PsiElement> elements = collectPsiElementsRecursive(psiElement);
 
         for (LineMarkerProvider lineMarkerProvider : LineMarkerProviders.getInstance().allForLanguage(psiElement.getLanguage())) {
-            Collection<LineMarkerInfo> lineMarkerInfos = new ArrayList<LineMarkerInfo>();
+            Collection<LineMarkerInfo> lineMarkerInfos = new ArrayList<>();
             lineMarkerProvider.collectSlowLineMarkers(elements, lineMarkerInfos);
 
-            if(lineMarkerInfos.size() == 0) {
+            if (lineMarkerInfos.size() == 0) {
                 continue;
             }
 
             for (LineMarkerInfo lineMarkerInfo : lineMarkerInfos) {
-                if(assertMatch.match(lineMarkerInfo)) {
+                if (assertMatch.match(lineMarkerInfo)) {
                     return;
                 }
             }
@@ -77,14 +77,14 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
         Set<String> items = new HashSet<>();
 
         for (IntentionAction intentionAction : IntentionManager.getInstance().getIntentionActions()) {
-            if(!intentionAction.isAvailable(getProject(), getEditor(), psiElement.getContainingFile())) {
+            if (!intentionAction.isAvailable(getProject(), getEditor(), psiElement.getContainingFile())) {
                 continue;
             }
 
             String text = intentionAction.getText();
             items.add(text);
 
-            if(!text.equals(intentionText)) {
+            if (!text.equals(intentionText)) {
                 continue;
             }
 
@@ -104,7 +104,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
         }
 
         PsiElement resolve = ((PhpReference) psiElement).resolve();
-        if(!pattern.accepts(resolve)) {
+        if (!pattern.accepts(resolve)) {
             fail(String.format("failed pattern matches element of '%s'", resolve == null ? "null" : resolve.toString()));
         }
 
@@ -132,10 +132,10 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
 
         for (PsiReference psiReference : parent.getReferences()) {
             // multi resolve
-            if(psiReference instanceof PsiPolyVariantReference) {
+            if (psiReference instanceof PsiPolyVariantReference) {
                 for (ResolveResult resolveResult : ((PsiPolyVariantReference) psiReference).multiResolve(true)) {
                     PsiElement element = resolveResult.getElement();
-                    if(pattern.accepts(element)) {
+                    if (pattern.accepts(element)) {
                         return;
                     }
                 }
@@ -143,11 +143,11 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
 
             // single result
             PsiElement resolve = psiReference.resolve();
-            if(resolve == null) {
+            if (resolve == null) {
                 continue;
             }
 
-            if(pattern.accepts(resolve)) {
+            if (pattern.accepts(resolve)) {
                 return;
             }
         }
@@ -165,9 +165,9 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
         }
 
         PhpType phpType = PhpIndex.getInstance(psiElement.getProject()).completeType(
-            psiElement.getProject(),
-            ((PhpTypedElement) psiElement).getType(),
-            new HashSet<>()
+                psiElement.getProject(),
+                ((PhpTypedElement) psiElement).getType(),
+                new HashSet<>()
         );
 
         assertContainsElements(phpType.getTypes(), types);
@@ -180,7 +180,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
 
         psiElement.acceptChildren(new PsiRecursiveElementVisitor() {
             @Override
-            public void visitElement(PsiElement element) {
+            public void visitElement(@NotNull PsiElement element) {
                 elements.add(element);
                 super.visitElement(element);
             }

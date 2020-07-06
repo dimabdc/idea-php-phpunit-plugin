@@ -1,11 +1,11 @@
-<idea-plugin url="https://github.com/Haehnchen/idea-php-phpunit-plugin">
-    <id>de.espend.idea.php.phpunit</id>
-    <name>PHPUnit Enhancement</name>
-    <version>4.1</version>
-    <vendor email="daniel@espendiller.net" url="http://espend.de">espend_de</vendor>
+<idea-plugin url="https://github.com/dimabdc/idea-php-phpunit-plugin">
+    <id>com.dimabdc.idea.php.phpunit</id>
+    <name>PHPUnit Helper</name>
+    <version>0.1</version>
+    <vendor email="support@titor.ru" url="https://github.com/dimabdc">Dmitry Borisevich</vendor>
 
     <description><![CDATA[
-    <p>Provide smart autocomplete, code navigation and refactoring features for mocked class methods of PhpUnit and Prophecy.</p>
+    <p>Provide smart autocomplete, code navigation and refactoring features for mocked class methods of PhpUnit 8.5+ and Prophecy.</p>
 
     <br/>
 
@@ -19,12 +19,14 @@
                 <li>type providers: <tt>getMock</tt>, <tt>getMockForAbstractClass</tt>, etc. will return mock object with methods of mocking class and <tt>PHPUnit_Framework_MockObject_MockObject</tt>;</li>
                 <li>
                     <p>supported PHPUnit methods:</p>
-                    <p><tt>PHPUnit_Framework_MockObject_MockBuilder::setMethods</tt></p>
-                    <p><tt>PHPUnit_Framework_TestCase::getMock</tt></p>
-                    <p><tt>PHPUnit_Framework_TestCase::getMockClass</tt></p>
-                    <p><tt>PHPUnit_Framework_TestCase::getMockForAbstractClass</tt></p>
-                    <p><tt>PHPUnit_Framework_TestCase::getMockForTrait</tt></p>
-                    <p><tt>PHPUnit_Framework_MockObject_Builder_InvocationMocker::method</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::setMethods</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::onlyMethods</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::addMethods</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::getMock</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::getMockClass</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::getMockForAbstractClass</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\MockBuilder::getMockForTrait</tt></p>
+                    <p><tt>PHPUnit\Framework\MockObject\Builder\InvocationMocker::method</tt></p>
                 </li>
             </ul>
         </li>
@@ -33,10 +35,10 @@
         <li>Prophecy support.</li>
     </ul>
 
-    <p>Fork of <a href="https://github.com/maxfilatov/phpuaca/">PHPUnit Autocomplete Assistant</a></p>
+    <p>Fork of <a href="https://github.com/Haehnchen/idea-php-phpunit-plugin">PHPUnit Enhancement</a></p>
   ]]></description>
 
-    <idea-version since-build="173.2290"/>
+    <idea-version since-build="201.6668.153"/>
 
     <depends>com.jetbrains.php</depends>
     <depends>com.intellij.modules.platform</depends>

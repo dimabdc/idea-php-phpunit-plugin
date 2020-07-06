@@ -6,6 +6,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.phpuaca.filter.util.ClassFinder;
+import com.phpuaca.filter.util.Result;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +69,7 @@ final public class PhpClassResolver {
 
     @Nullable
     public PhpClass resolveByVariable(@NotNull Variable variable) {
-        ClassFinder.Result classFinderResult = (new ClassFinder()).find(variable);
+        Result classFinderResult = (new ClassFinder()).find(variable);
         if (classFinderResult == null) {
             return null;
         }
