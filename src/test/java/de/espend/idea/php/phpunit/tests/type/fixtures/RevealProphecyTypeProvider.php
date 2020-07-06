@@ -2,10 +2,9 @@
 
 namespace PHPUnit\Framework
 {
-
     use Prophecy\Prophecy\ObjectProphecy;
 
-    class TestCase extends \PHPUnit_Framework_MockObject_InvocationMocker
+    class TestCase
     {
         /**
          * @param null $classOrInterface

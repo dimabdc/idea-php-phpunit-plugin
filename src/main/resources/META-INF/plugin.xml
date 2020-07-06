@@ -38,7 +38,7 @@
     <p>Fork of <a href="https://github.com/Haehnchen/idea-php-phpunit-plugin">PHPUnit Enhancement</a></p>
   ]]></description>
 
-    <idea-version since-build="201.6668.153"/>
+    <idea-version since-build="201.6668.121"/>
 
     <depends>com.jetbrains.php</depends>
     <depends>com.intellij.modules.platform</depends>

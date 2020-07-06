@@ -1,17 +1,29 @@
 <?php
 
+namespace Foo
+{
+    class Bar
+    {
+       public function getFooBar()
+       {
+       }
+    }
+}
+
 namespace PHPUnit\Framework
 {
+    use PHPUnit\Framework\MockObject\MockObject;
+
     abstract class TestCase
     {
         /**
          * @param string $originalClassName
          *
-         * @return \PHPUnit_Framework_MockObject_MockObject
+         * @return MockObject
          */
         protected function createMock($originalClassName)
         {
-            return new \PHPUnit_Framework_MockObject_MockObject();
+            return new MockObject();
         }
 
         /**
@@ -23,43 +35,10 @@ namespace PHPUnit\Framework
     }
 }
 
-namespace
-{
-    abstract class PHPUnit_Framework_TestCase
-    {
-        /**
-         * @param string $originalClassName
-         *
-         * @return PHPUnit_Framework_MockObject_MockObject
-         */
-        protected function createMock($originalClassName)
-        {
-            return new PHPUnit_Framework_MockObject_MockObject();
-        }
-    }
-
-    class PHPUnit_Framework_MockObject_MockObject
-    {
-        /**
-         * @return PHPUnit_Framework_MockObject_Builder_InvocationMocker
-         */
-        public function expects()
-        {
-            return new PHPUnit_Framework_MockObject_Builder_InvocationMocker();
-        }
-    }
-
-    class PHPUnit_Framework_MockObject_MockBuilder
-    {
-    }
-
-    class PHPUnit_Framework_MockObject_Builder_InvocationMocker
-    {
-    }
-}
-
 namespace PHPUnit\Framework\MockObject
 {
+    use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
+
     class MockBuilder
     {
         /**
@@ -77,15 +56,35 @@ namespace PHPUnit\Framework\MockObject
         {
             return $this;
         }
+
+        /**
+         * @return InvocationMocker
+         */
+        public function expects()
+        {
+            return new InvocationMocker();
+        }
+
+        /**
+         * @return InvocationMocker
+         */
+        public function method($constraint)
+        {
+            return new InvocationMocker();
+        }
     }
 }
 
-namespace Foo
+namespace PHPUnit\Framework\MockObject\Builder
 {
-    class Bar
+    class InvocationMocker
     {
-       public function getFooBar()
-       {
-       }
+        /**
+         * @return InvocationMocker
+         */
+        public function method($constraint)
+        {
+            return new self();
+        }
     }
 }

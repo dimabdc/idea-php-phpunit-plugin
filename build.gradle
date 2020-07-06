@@ -34,7 +34,6 @@ publishPlugin {
 }
 
 patchPluginXml {
-    sinceBuild phpPluginVersion
     changeNotes = htmlFixer('src/main/resources/META-INF/change-notes.html')
 }
 
