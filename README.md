@@ -21,16 +21,17 @@ Stable version, JetBrains repository:
 ## Feature list
 
 * method autocomplete for class, abstract class and trait mock objects;
-  * type providers: `getMock`, `getMockForAbstractClass`, etc. will return mock object with methods of mocking class and `PHPUnit_Framework_MockObject_MockObject`;
+  * type providers: `getMock`, `getMockForAbstractClass`, etc. will return mock object with methods of mocking class and `PHPUnit\Framework\MockObject\MockObject`;
   * supported PHPUnit methods:
     * `PHPUnit\Framework\MockObject\MockBuilder::setMethods`
     * `PHPUnit\Framework\MockObject\MockBuilder::onlyMethods`
     * `PHPUnit\Framework\MockObject\MockBuilder::addMethods`
-    * `PHPUnit\Framework\MockObject\MockBuilder::getMock`
-    * `PHPUnit\Framework\MockObject\MockBuilder::getMockClass`
-    * `PHPUnit\Framework\MockObject\MockBuilder::getMockForAbstractClass` 
-    * `PHPUnit\Framework\MockObject\MockBuilder::getMockForTrait` 
+    * `PHPUnit\Framework\MockObject\TestCase::getMock`
+    * `PHPUnit\Framework\MockObject\TestCase::getMockClass`
+    * `PHPUnit\Framework\MockObject\TestCase::getMockForAbstractClass` 
+    * `PHPUnit\Framework\MockObject\TestCase::getMockForTrait` 
     * `PHPUnit\Framework\MockObject\Builder\InvocationMocker::method` 
+    * `PHPUnit\Framework\MockObject\MockObject::method` 
 * code navigation (go to declaration, find usages, etc.) and refactoring (rename methods);
 * highlighting of incorrect method usages;
 * Prophecy support.
