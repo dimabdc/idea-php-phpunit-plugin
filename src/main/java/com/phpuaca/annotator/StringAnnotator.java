@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocMethod;
 import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.phpuaca.filter.Filter;
@@ -20,9 +21,6 @@ public class StringAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder annotationHolder) {
         AvailabilityHelper availabilityHelper = new AvailabilityHelper();
-        if (!availabilityHelper.checkFile(psiElement.getContainingFile())) {
-            return;
-        }
 
         if (!availabilityHelper.checkScope(psiElement)) {
             return;
@@ -63,8 +61,15 @@ public class StringAnnotator implements Annotator {
     private Method findMethod(PhpClass phpClass, String name) {
         do {
             Method method = phpClass.findOwnMethodByName(name);
-            if (method != null) {
+            if (method != null && !(method instanceof PhpDocMethod)) {
                 return method;
+            }
+
+            for (PhpClass trait : phpClass.getTraits()) {
+                method = findMethod(trait, name);
+                if (method != null) {
+                    return method;
+                }
             }
         } while ((phpClass = phpClass.getSuperClass()) != null);
 
