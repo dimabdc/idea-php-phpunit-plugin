@@ -103,7 +103,7 @@ public class PhpElementsUtil {
             }
 
             for (String expectedClassName : expectedClassNameAsOr) {
-                if (PhpElementsUtil.isInstanceOf(containingClass, expectedClassName)) {
+                if (isInstanceOf(containingClass, expectedClassName)) {
                     return true;
                 }
             }
