@@ -13,6 +13,7 @@ import com.phpuaca.util.PhpVariable;
 import com.sun.istack.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InvocationMockerFilter extends Filter {
@@ -41,7 +42,7 @@ public class InvocationMockerFilter extends Filter {
         setPhpClass(classFinderResult.getPhpClass());
 
         boolean methodsDeclared = false;
-        List<String> methodNames = List.of("setMethods", "addMethods", "onlyMethods");
+        List<String> methodNames = Arrays.asList("setMethods", "addMethods", "onlyMethods");
         for (String methodName : methodNames) {
             MethodReference definitionMethodReference = (new PhpMethodChain(methodReference)).findMethodReference(methodName);
             if (definitionMethodReference == null) {
