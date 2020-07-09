@@ -7,7 +7,7 @@ PhpStorm plugin to provide smart autocomplete, code navigation and refactoring f
 
 Key         | Value
 ----------- | -----------
-Plugin Url  | 
+Plugin Url  | https://plugins.jetbrains.com/plugin/14672-phpunit-helper
 ID          | com.dimabdc.idea.php.phpunit
 Changelog   | [CHANGELOG](CHANGELOG.md)
 Build and Deployment | [MAINTENANCE](MAINTENANCE.md)

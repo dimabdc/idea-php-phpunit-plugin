@@ -7,16 +7,12 @@
     <description><![CDATA[
     <p>Provide smart autocomplete, code navigation and refactoring features for mocked class methods of PhpUnit 8.5+ and Prophecy.</p>
 
-    <br/>
-
-    <a href="https://github.com/dimabdc/idea-php-phpunit-plugin">GitHub</a>
-
     <p><h2>Feature list</h2></p>
     <ul>
         <li>
             <p>method autocomplete for class, abstract class and trait mock objects;</p>
             <ul>
-                <li>type providers: <tt>getMock</tt>, <tt>getMockForAbstractClass</tt>, etc. will return mock object with methods of mocking class and <tt>PHPUnit_Framework_MockObject_MockObject</tt>;</li>
+                <li>type providers: <tt>getMock</tt>, <tt>getMockForAbstractClass</tt>, etc. will return mock object with methods of mocking class and <tt>PHPUnit\Framework\MockObject\MockObject</tt>;</li>
                 <li>
                     <p>supported PHPUnit methods:</p>
                     <p><tt>PHPUnit\Framework\MockObject\MockBuilder::setMethods</tt></p>
