@@ -1,6 +1,7 @@
 # IntelliJ IDEA / PhpStorm PHPUnit Helper
 
 [![Build Status](https://travis-ci.org/dimabdc/idea-php-phpunit-plugin.svg?branch=master)](https://travis-ci.org/dimabdc/idea-php-phpunit-plugin)
+![IntelliJ Plugin Compatibility](https://github.com/dimabdc/idea-php-phpunit-plugin/workflows/IntelliJ%20Plugin%20Compatibility/badge.svg)
 
 PhpStorm plugin to provide smart autocomplete, code navigation and refactoring features for mocked class methods. Supported all versions of PhpStorm since 2020.1
 
