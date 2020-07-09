@@ -21,7 +21,7 @@ public class TestRunIntentionAction extends PsiElementBaseIntentionAction {
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) throws IncorrectOperationException {
         PsiElement context = getTestContextElement(psiElement);
-        if(context != null) {
+        if (context != null) {
             PhpUnitPluginUtil.executeDebugRunner(psiElement);
         }
     }
@@ -34,12 +34,12 @@ public class TestRunIntentionAction extends PsiElementBaseIntentionAction {
     @Nullable
     private PsiElement getTestContextElement(@NotNull PsiElement psiElement) {
         Method method = PhpPsiUtil.getParentByCondition(psiElement, Method.INSTANCEOF);
-        if(method != null && PhpUnitUtil.isTestMethod(method)) {
+        if (method != null && PhpUnitUtil.isTestMethod(method)) {
             return method;
         }
 
         PhpClass phpClass = PhpPsiUtil.getParentByCondition(psiElement, PhpClass.INSTANCEOF);
-        if(phpClass != null && PhpUnitUtil.isTestClass(phpClass)) {
+        if (phpClass != null && PhpUnitUtil.isTestClass(phpClass)) {
             return phpClass;
         }
 

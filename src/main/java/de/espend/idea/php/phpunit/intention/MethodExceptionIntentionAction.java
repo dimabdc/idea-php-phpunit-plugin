@@ -24,9 +24,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,27 +34,25 @@ public class MethodExceptionIntentionAction extends PsiElementBaseIntentionActio
     @Override
     public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement psiElement) throws IncorrectOperationException {
         Method method = getMethodScope(psiElement);
-        if(method == null) {
+        if (method == null) {
             return;
         }
 
         Collection<String> exceptions = getException(method);
-        if(exceptions.size() == 0) {
+        if (exceptions.size() == 0) {
             HintManager.getInstance().showErrorHint(editor, "No exception in method scope found");
 
             return;
         }
 
-        final JBList<String> list = new JBList<>(exceptions);
-
-        JBPopupFactory.getInstance().createListPopupBuilder(list)
+        final List<String> list = new ArrayList<>(exceptions);
+        JBPopupFactory.getInstance().createPopupChooserBuilder(list)
             .setTitle("PHPUnit: Select Exception")
-            .setItemChoosenCallback(() -> new WriteCommandAction.Simple(editor.getProject(), "PHPUnit: expectedException Insert") {
-                @Override
-                protected void run() {
-                    PhpUnitPluginUtil.insertExpectedException(editor.getDocument(), method, list.getSelectedValue());
-                }
-            }.execute())
+            .setItemChosenCallback((selectedValue) -> {
+                WriteCommandAction.writeCommandAction(project).withName("PHPUnit: ExpectedException Insert").run(() -> {
+                    PhpUnitPluginUtil.insertExpectedException(editor.getDocument(), method, selectedValue);
+                });
+            })
             .createPopup()
             .showInBestPositionFor(editor);
     }
@@ -69,7 +65,7 @@ public class MethodExceptionIntentionAction extends PsiElementBaseIntentionActio
     @Nullable
     private Method getMethodScope(@NotNull PsiElement psiElement) {
         Method method = PsiTreeUtil.getParentOfType(psiElement, Method.class);
-        if(method != null && PhpUnitUtil.isTestMethod(method)) {
+        if (method != null && PhpUnitUtil.isTestMethod(method)) {
             return method;
         }
 
@@ -95,8 +91,8 @@ public class MethodExceptionIntentionAction extends PsiElementBaseIntentionActio
 
         psiElement.acceptChildren(new PsiRecursiveElementVisitor() {
             @Override
-            public void visitElement(PsiElement element) {
-                if(element instanceof MethodReference) {
+            public void visitElement(@NotNull PsiElement element) {
+                if (element instanceof MethodReference) {
                     methodReferences.add((MethodReference) element);
                 }
 
@@ -105,12 +101,12 @@ public class MethodExceptionIntentionAction extends PsiElementBaseIntentionActio
         });
 
         return StreamEx.of(methodReferences)
-                .map(PsiReference::resolve)
-                .select(PhpScopeHolder.class)
-                .flatCollection(PhpThrownExceptionsAnalyzer::getExceptionClasses)
-                .map(phpType -> StringUtils.stripStart(phpType.toString(), "\\"))
-                .filter(s -> !s.toLowerCase().contains("phpunit"))
-                .sorted()
-                .collect(Collectors.toCollection(HashSet::new));
+            .map(PsiReference::resolve)
+            .select(PhpScopeHolder.class)
+            .flatCollection(PhpThrownExceptionsAnalyzer::getExceptionClasses)
+            .map(phpType -> StringUtils.stripStart(phpType.toString(), "\\"))
+            .filter(s -> !s.toLowerCase().contains("phpunit"))
+            .sorted()
+            .collect(Collectors.toCollection(HashSet::new));
     }
 }

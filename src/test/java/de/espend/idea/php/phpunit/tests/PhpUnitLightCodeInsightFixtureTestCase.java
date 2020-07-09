@@ -9,7 +9,7 @@ import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpReference;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
-public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeInsightFixtureTestCase {
+public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCodeInsightFixtureTestCase {
 
     public void assertCompletionContains(LanguageFileType languageFileType, String configureByText, String... lookupStrings) {
 
@@ -190,7 +190,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
 
     public static class LineMarker {
         public interface Assert {
-            boolean match(@NotNull LineMarkerInfo markerInfo);
+            boolean match(LineMarkerInfo<PsiElement> markerInfo);
         }
 
         public static class ToolTipEqualsAssert implements Assert {
@@ -202,7 +202,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightCodeIn
             }
 
             @Override
-            public boolean match(@NotNull LineMarkerInfo markerInfo) {
+            public boolean match(LineMarkerInfo<PsiElement> markerInfo) {
                 return markerInfo.getLineMarkerTooltip() != null && markerInfo.getLineMarkerTooltip().equals(toolTip);
             }
         }

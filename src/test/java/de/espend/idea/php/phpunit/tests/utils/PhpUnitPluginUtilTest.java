@@ -11,6 +11,8 @@ import com.jetbrains.php.lang.psi.elements.PhpClass;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 import de.espend.idea.php.phpunit.utils.PhpUnitPluginUtil;
 
+import java.util.Objects;
+
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
@@ -18,19 +20,19 @@ public class PhpUnitPluginUtilTest extends PhpUnitLightCodeInsightFixtureTestCas
 
     public void testIsTestClassWithoutIndexAccess() {
         assertTrue(PhpUnitPluginUtil.isTestClassWithoutIndexAccess(
-            PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest {}")
+            Objects.requireNonNull(PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest {}"))
         ));
 
         assertTrue(PhpUnitPluginUtil.isTestClassWithoutIndexAccess(
-            PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest extends \\PHPUnit\\Framework\\TestCase {}")
+            Objects.requireNonNull(PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest extends \\PHPUnit\\Framework\\TestCase {}"))
         ));
 
         assertTrue(PhpUnitPluginUtil.isTestClassWithoutIndexAccess(
-            PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest extends PHPUnit_Framework_TestCase {}")
+            Objects.requireNonNull(PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest extends PHPUnit_Framework_TestCase {}"))
         ));
 
         assertTrue(PhpUnitPluginUtil.isTestClassWithoutIndexAccess(
-            PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest extends \\Symfony\\Bundle\\FrameworkBundle\\Test\\WebTestCase {}")
+            Objects.requireNonNull(PhpPsiElementFactory.createFromText(getProject(), PhpClass.class, "<?php class FooTest extends \\Symfony\\Bundle\\FrameworkBundle\\Test\\WebTestCase {}"))
         ));
     }
 
@@ -44,12 +46,9 @@ public class PhpUnitPluginUtilTest extends PhpUnitLightCodeInsightFixtureTestCas
         Document document = PsiDocumentManager.getInstance(getProject()).getDocument(psiFile);
         Function function = PsiTreeUtil.findChildOfType(psiFile, Function.class);
 
-        new WriteCommandAction.Simple(getProject(), "PHPUnit: expectedException Insert") {
-            @Override
-            protected void run() {
-                PhpUnitPluginUtil.insertExpectedException(document, function, "Foobar\\Foobar");
-            }
-        }.execute();
+        WriteCommandAction.writeCommandAction(getProject()).withName("PHPUnit: ExpectedException Insert").run(() -> {
+            PhpUnitPluginUtil.insertExpectedException(document, function, "Foobar\\Foobar");
+        });
 
         assertTrue(psiFile.getText().contains("@expectedException \\Foobar\\Foobar"));
     }
@@ -68,12 +67,9 @@ public class PhpUnitPluginUtilTest extends PhpUnitLightCodeInsightFixtureTestCas
         Document document = PsiDocumentManager.getInstance(getProject()).getDocument(psiFile);
         Function function = PsiTreeUtil.findChildOfType(psiFile, Function.class);
 
-        new WriteCommandAction.Simple(getProject(), "PHPUnit: expectedException Insert") {
-            @Override
-            protected void run() {
-                PhpUnitPluginUtil.insertExpectedException(document, function, "Foobar\\Foobar");
-            }
-        }.execute();
+        WriteCommandAction.writeCommandAction(getProject()).withName("PHPUnit: ExpectedException Insert").run(() -> {
+            PhpUnitPluginUtil.insertExpectedException(document, function, "Foobar\\Foobar");
+        });
 
         assertTrue(psiFile.getText().contains("@expectedException \\Foobar\\Foobar"));
     }

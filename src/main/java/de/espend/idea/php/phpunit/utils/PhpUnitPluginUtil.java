@@ -45,9 +45,8 @@ public class PhpUnitPluginUtil {
         ConfigurationFromContext context = RunConfigurationProducer.getInstance(PhpUnitRuntimeConfigurationProducer.class)
             .createConfigurationFromContext(new ConfigurationContext(psiElement));
 
-        if(context != null) {
+        if (context != null) {
             ProgramRunnerUtil.executeConfiguration(
-                psiElement.getProject(),
                 context.getConfigurationSettings(),
                 DefaultDebugExecutor.getDebugExecutorInstance()
             );
@@ -57,13 +56,13 @@ public class PhpUnitPluginUtil {
     /**
      * Check if class is possibly a Test class, we just try to find it in local file scope
      * no index access invoked
-     *
+     * <p>
      * FooTest or on extends eg PHPUnit\Framework\TestCase
      */
     public static boolean isTestClassWithoutIndexAccess(@NotNull PhpClass phpClass) {
         String name = phpClass.getName();
         if (name.endsWith("Test") || name.endsWith("Context")) {
-           return true;
+            return true;
         }
 
         // find "extends" classes
@@ -102,8 +101,8 @@ public class PhpUnitPluginUtil {
 
             // PhpUnit and Behat folder structure
             if (relativePath.toLowerCase().contains("/test/") ||
-                relativePath.toLowerCase().contains("/tests/")  ||
-                relativePath.toLowerCase().contains("/feature/")  ||
+                relativePath.toLowerCase().contains("/tests/") ||
+                relativePath.toLowerCase().contains("/feature/") ||
                 relativePath.toLowerCase().contains("/features/")
             ) {
                 return true;
@@ -120,14 +119,13 @@ public class PhpUnitPluginUtil {
     @Nullable
     public static String findCreateMockParameterOnParameterScope(@NotNull StringLiteralExpression psiElement) {
         PsiElement parameterList = psiElement.getParent();
-        if(parameterList instanceof ParameterList) {
+        if (parameterList instanceof ParameterList) {
             PsiElement methodReference = parameterList.getParent();
-            if(methodReference instanceof MethodReference && (
+            if (methodReference instanceof MethodReference && (
                 PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\MockObject", "method") ||
-                PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method") ||
-                PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Stub", "method")
-                ))
-            {
+                    PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method") ||
+                    PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Stub", "method")
+            )) {
                 return CreateMockMethodReferenceProcessor.createParameter((MethodReference) methodReference);
             }
         }
@@ -144,9 +142,9 @@ public class PhpUnitPluginUtil {
         String tagString = "@expectedException \\" + exceptionClass;
 
         // we need to update
-        if(docComment != null)  {
+        if (docComment != null) {
             PsiElement elementToInsert = PhpPsiElementFactory.createFromText(forElement.getProject(), PhpDocTag.class, "/** " + tagString + " */\\n");
-            if(elementToInsert == null) {
+            if (elementToInsert == null) {
                 return;
             }
 
@@ -162,7 +160,7 @@ public class PhpUnitPluginUtil {
 
         // new PhpDoc see PhpDocCommentGenerator
         docComment = PhpPsiElementFactory.createFromText(forElement.getProject(), PhpDocComment.class, "/**\n " + tagString + " \n */");
-        if(docComment == null) {
+        if (docComment == null) {
             return;
         }
 
@@ -171,7 +169,7 @@ public class PhpUnitPluginUtil {
         parent.addBefore(docComment, forElement);
         PsiDocumentManager.getInstance(forElement.getProject()).doPostponedOperationsAndUnblockDocument(document);
         PsiElement atElement = forElement.getContainingFile().findElementAt(atOffset);
-        if (atElement != null)            {
+        if (atElement != null) {
             PsiElement docParent = PsiTreeUtil.findFirstParent(atElement, true, element -> ((element instanceof PhpDocComment)) || ((element instanceof PhpFile)));
             if ((docParent instanceof PhpDocComment)) {
                 CodeStyleManager.getInstance(forElement.getProject()).reformatNewlyAddedElement(docParent.getParent().getNode(), docParent.getNode());

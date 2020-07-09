@@ -16,18 +16,20 @@ import org.jetbrains.annotations.Nullable;
 
 public class StringReference implements PsiReference {
 
-    private PsiElement psiElement;
+    private final PsiElement psiElement;
 
     public StringReference(PsiElement psiElement) {
         this.psiElement = psiElement;
     }
 
     @Override
+    @NotNull
     public PsiElement getElement() {
         return psiElement;
     }
 
     @Override
+    @NotNull
     public TextRange getRangeInElement() {
         return new TextRange(1, getElement().getTextLength() - 1);
     }
@@ -58,7 +60,7 @@ public class StringReference implements PsiReference {
     }
 
     @Override
-    public PsiElement handleElementRename(String s) throws IncorrectOperationException {
+    public PsiElement handleElementRename(@NotNull String s) throws IncorrectOperationException {
         PsiElement element = getElement();
         ASTNode nameNode = element.getNode();
         if (nameNode != null && !getCanonicalText().equals(s)) {
@@ -76,7 +78,7 @@ public class StringReference implements PsiReference {
     }
 
     @Override
-    public boolean isReferenceTo(PsiElement psiElement) {
+    public boolean isReferenceTo(@NotNull PsiElement psiElement) {
         PsiElement resolvedElement = resolve();
         return resolvedElement != null && resolvedElement.equals(psiElement);
     }
