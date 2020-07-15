@@ -2,7 +2,6 @@ package de.espend.idea.php.phpunit.tests.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.php.lang.PhpFileType;
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 import de.espend.idea.php.phpunit.utils.ChainVisitorUtil;
@@ -116,7 +115,7 @@ public class ChainVisitorUtilTest extends PhpUnitLightCodeInsightFixtureTestCase
 
     @Nullable
     private String findCreateMockParameter(@NotNull String content) {
-        myFixture.configureByText(PhpFileType.INSTANCE, content);
+        configureByText(content);
 
         PsiElement psiElement = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
         MethodReference methodReference = PsiTreeUtil.getParentOfType(psiElement, MethodReference.class);

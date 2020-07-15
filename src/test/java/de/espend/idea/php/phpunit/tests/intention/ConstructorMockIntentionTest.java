@@ -1,13 +1,11 @@
 package de.espend.idea.php.phpunit.tests.intention;
 
 import com.intellij.psi.PsiElement;
-import com.jetbrains.php.lang.PhpFileType;
 import de.espend.idea.php.phpunit.intention.ConstructorMockIntention;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
- *
  * @see de.espend.idea.php.phpunit.intention.ConstructorMockIntention
  */
 public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixtureTestCase {
@@ -21,7 +19,8 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatMockIsCreatedForEmptyConstructor() {
-        myFixture.configureByText(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "new \\Foo\\<caret>Bar();"
         );
 
@@ -33,7 +32,8 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatMockIsCreatedForEmptyConstructorWithParentConstructor() {
-        myFixture.configureByText(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "new \\Foo\\FooExte<caret>nds();"
         );
 
@@ -45,7 +45,8 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatMockIsCreatedForEmptyConstructorWithoutParameterList() {
-        myFixture.configureByText(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "new \\Foo\\FooExte<caret>nds;"
         );
 
@@ -57,7 +58,8 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatMockIsCreatedForEmptyConstructorWithParameter() {
-        myFixture.configureByText(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "new \\Foo\\<caret>BarNext($this->createMock(Foo::class));"
         );
 
@@ -68,7 +70,8 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatMockIsCreatedForEmptyConstructorWithPrimitiveTypes() {
-        myFixture.configureByText(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "new \\Foo\\<caret>BarPrimitives();"
         );
 
@@ -82,7 +85,8 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatMockIsCreatedForEmptyConstructorWithParameterAsVariableDeclaration() {
-        myFixture.configureByText(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "$f<caret>oo = new \\Foo\\BarNext($this->createMock(Foo::class));"
         );
 
@@ -96,27 +100,29 @@ public class ConstructorMockIntentionTest extends PhpUnitLightCodeInsightFixture
     }
 
     public void testThatIntentionIsAvailableForConstructorContext() {
-        assertIntentionIsAvailable(PhpFileType.INSTANCE, "<?php\n" +
-                "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function testFoobar()\n" +
-                "        {\n" +
-                "            $foo = new Fo<caret>obar()\n" +
-                "        }\n" +
-                "    }",
-            "PHPUnit: Add constructor mocks"
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            $foo = new Fo<caret>obar()\n" +
+            "        }\n" +
+            "    }"
         );
+        assertIntentionIsAvailable("PHPUnit: Add constructor mocks");
 
-        assertIntentionIsAvailable(PhpFileType.INSTANCE, "<?php\n" +
-                "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function testFoobar()\n" +
-                "        {\n" +
-                "            $fo<caret>o = new Foobar()\n" +
-                "        }\n" +
-                "    }",
-            "PHPUnit: Add constructor mocks"
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            $fo<caret>o = new Foobar()\n" +
+            "        }\n" +
+            "    }"
         );
+        assertIntentionIsAvailable("PHPUnit: Add constructor mocks");
     }
 
     private String invokeAndGetText() {

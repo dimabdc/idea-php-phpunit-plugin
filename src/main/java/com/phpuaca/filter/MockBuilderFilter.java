@@ -1,13 +1,13 @@
 package com.phpuaca.filter;
 
-import com.jetbrains.php.lang.psi.elements.MethodReference;
-import com.jetbrains.php.lang.psi.elements.ParameterList;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
-import com.jetbrains.php.lang.psi.elements.PhpModifier;
+import com.jetbrains.php.lang.psi.elements.*;
 import com.phpuaca.filter.util.ClassFinder;
 import com.phpuaca.filter.util.Result;
 import com.phpuaca.util.PhpArrayParameter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class MockBuilderFilter extends Filter {
@@ -15,7 +15,6 @@ public class MockBuilderFilter extends Filter {
     public MockBuilderFilter(FilterContext context) {
         super(context);
 
-        allowMethods();
         allowModifier(PhpModifier.PUBLIC_ABSTRACT_DYNAMIC);
         allowModifier(PhpModifier.PUBLIC_IMPLEMENTED_DYNAMIC);
         allowModifier(PhpModifier.PROTECTED_ABSTRACT_DYNAMIC);
@@ -28,24 +27,45 @@ public class MockBuilderFilter extends Filter {
             setPhpClass(classFinderResult.getPhpClass());
         }
 
-        allowMethods();
         disallowMethod(PhpClass.CONSTRUCTOR);
         disallowMethod(PhpClass.DESTRUCTOR);
 
-        PhpClass phpclass = getPhpClass();
-
         if (Objects.equals(methodReference.getName(), "addMethods")) {
-            do {
-                describeMethods(phpclass.getOwnMethods());
-            } while ((phpclass = phpclass.getSuperClass()) != null);
-        } else {
-            ParameterList parameterList = methodReference.getParameterList();
-            if (parameterList != null) {
-                PhpArrayParameter phpArrayParameter = PhpArrayParameter.create(parameterList, context.getFilterConfigItem().getParameterNumber());
-                if (phpArrayParameter != null) {
-                    describeMethods(phpArrayParameter.getValues());
+            describeMethods(getClassMethods(getPhpClass()));
+        }
+
+        if (Objects.equals(methodReference.getName(), "onlyMethods")) {
+            allowMethods(getClassMethods(getPhpClass()));
+        }
+
+        ParameterList parameterList = methodReference.getParameterList();
+        if (parameterList == null) {
+            return;
+        }
+
+        PhpArrayParameter phpArrayParameter = PhpArrayParameter.create(parameterList, context.getFilterConfigItem().getParameterNumber());
+        if (phpArrayParameter != null) {
+            describeMethods(phpArrayParameter.getValues());
+        }
+    }
+
+    private Method[] getClassMethods(PhpClass mockClass) {
+        List<Method> methods = new ArrayList<>();
+
+        do {
+            Method[] classOwnMethods = mockClass.getOwnMethods();
+            if (classOwnMethods.length > 0) {
+                methods.addAll(Arrays.asList(classOwnMethods));
+            }
+
+            for (PhpClass trait : mockClass.getTraits()) {
+                classOwnMethods = getClassMethods(trait);
+                if (classOwnMethods.length > 0) {
+                    methods.addAll(Arrays.asList(classOwnMethods));
                 }
             }
-        }
+        } while ((mockClass = mockClass.getSuperClass()) != null);
+
+        return methods.toArray(new Method[0]);
     }
 }

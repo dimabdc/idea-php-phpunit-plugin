@@ -42,6 +42,28 @@ namespace Foo
     }
 }
 
+namespace App\Models
+{
+    class ChatAIVertex
+    {
+        public function __construct(array $attributes = [])
+        {
+        }
+    }
+}
+
+namespace App\Services\Vertex\AI
+{
+    use App\Models\ChatAIVertex;
+
+    class AIRepository
+    {
+        public function __construct(ChatAIVertex $model)
+        {
+        }
+    }
+}
+
 namespace PHPUnit\Framework
 {
     class TestCase

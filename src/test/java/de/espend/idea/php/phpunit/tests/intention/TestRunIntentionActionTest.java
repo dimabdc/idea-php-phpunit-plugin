@@ -1,6 +1,5 @@
 package de.espend.idea.php.phpunit.tests.intention;
 
-import com.jetbrains.php.lang.PhpFileType;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
 /**
@@ -18,18 +17,16 @@ public class TestRunIntentionActionTest extends PhpUnitLightCodeInsightFixtureTe
     }
 
     public void testThatIntentionIsAvailableForClass() {
-        assertIntentionIsAvailable(
-            PhpFileType.INSTANCE,
-            "<?php\n class Foo extends \\PHPUnit\\Framework\\TestCase {<caret>}",
-            "PHPUnit: Run Test"
+        configureByText(
+            "<?php\n class Foo extends \\PHPUnit\\Framework\\TestCase {<caret>}"
         );
+        assertIntentionIsAvailable("PHPUnit: Run Test");
     }
 
     public void testThatIntentionIsAvailableForMethod() {
-        assertIntentionIsAvailable(
-            PhpFileType.INSTANCE,
-            "<?php\n class Foo extends \\PHPUnit\\Framework\\TestCase { function testFoo() { <caret>} }",
-            "PHPUnit: Run Test"
+        configureByText(
+            "<?php\n class Foo extends \\PHPUnit\\Framework\\TestCase { function testFoo() { <caret>} }"
         );
+        assertIntentionIsAvailable("PHPUnit: Run Test");
     }
 }

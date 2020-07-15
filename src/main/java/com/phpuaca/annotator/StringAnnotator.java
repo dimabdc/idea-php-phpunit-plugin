@@ -39,18 +39,18 @@ public class StringAnnotator implements Annotator {
         String name = StringUtil.unquoteString(psiElement.getText());
         Method method = findMethod(phpClass, name);
         if (method == null) {
-            if (Objects.equals(filter.getPhpMethod(), "addMethods")) {
+            if (Objects.equals(filter.getPhpMethodName(), "addMethods")) {
                 return;
             }
 
-            if (filter.isMethodAllowed(name) && Objects.equals(filter.getPhpMethod(), "method")) {
+            if (filter.isMethodAllowed(name) && Objects.equals(filter.getPhpMethodName(), "method")) {
                 return;
             }
 
             annotationHolder.newAnnotation(HighlightSeverity.WARNING, "Method '" + name + "' not found in class " + phpClass.getName()).create();
         } else {
             boolean isMethodAllowed = filter.isMethodAllowed(method);
-            boolean isAddMethods = Objects.equals(filter.getPhpMethod(), "addMethods");
+            boolean isAddMethods = Objects.equals(filter.getPhpMethodName(), "addMethods");
             if ((!isMethodAllowed && !isAddMethods) || (isMethodAllowed && isAddMethods)) {
                 annotationHolder.newAnnotation(HighlightSeverity.WARNING, "Method '" + name + "' is not allowed to use here").create();
             }

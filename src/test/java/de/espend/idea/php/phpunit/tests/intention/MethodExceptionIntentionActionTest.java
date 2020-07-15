@@ -1,11 +1,9 @@
 package de.espend.idea.php.phpunit.tests.intention;
 
-import com.jetbrains.php.lang.PhpFileType;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
- *
  * @see de.espend.idea.php.phpunit.intention.MethodExceptionIntentionAction
  */
 public class MethodExceptionIntentionActionTest extends PhpUnitLightCodeInsightFixtureTestCase {
@@ -19,15 +17,16 @@ public class MethodExceptionIntentionActionTest extends PhpUnitLightCodeInsightF
     }
 
     public void testThatIntentionIsAvailableForConstructorContext() {
-        assertIntentionIsAvailable(PhpFileType.INSTANCE, "<?php\n" +
-                "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function testFoobar()\n" +
-                "        {\n" +
-                "            <caret>\n" +
-                "        }\n" +
-                "    }",
-            "PHPUnit: Expected exception"
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            <caret>\n" +
+            "        }\n" +
+            "    }"
         );
+        assertIntentionIsAvailable("PHPUnit: Expected exception");
     }
 }

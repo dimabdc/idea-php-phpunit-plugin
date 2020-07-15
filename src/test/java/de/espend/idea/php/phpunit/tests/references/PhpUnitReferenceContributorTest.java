@@ -1,7 +1,6 @@
 package de.espend.idea.php.phpunit.tests.references;
 
 import com.intellij.patterns.PlatformPatterns;
-import com.jetbrains.php.lang.PhpFileType;
 import com.jetbrains.php.lang.psi.elements.Method;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
@@ -20,7 +19,8 @@ public class PhpUnitReferenceContributorTest extends PhpUnitLightCodeInsightFixt
     }
 
     public void testThatReferencesForClassMethodAreProvided() {
-        assertReferencesMatch(PhpFileType.INSTANCE, "<?php\n" +
+        configureByText(
+            "<?php\n" +
             "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
             "{\n" +
             "" +
@@ -33,8 +33,8 @@ public class PhpUnitReferenceContributorTest extends PhpUnitLightCodeInsightFixt
             "   {\n" +
             "       $this->foo->method('getFoo<caret>bar');\n" +
             "   }\n" +
-            "}",
-            PlatformPatterns.psiElement(Method.class).withName("getFoobar")
+            "}"
         );
+        assertReferencesMatch(PlatformPatterns.psiElement(Method.class).withName("getFoobar"));
     }
 }

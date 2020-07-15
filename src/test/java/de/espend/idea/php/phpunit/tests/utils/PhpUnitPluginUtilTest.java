@@ -37,11 +37,12 @@ public class PhpUnitPluginUtilTest extends PhpUnitLightCodeInsightFixtureTestCas
     }
 
     public void testThatInsertExpectedExceptionForNonExistingDocBlock() {
-        PsiFile psiFile = myFixture.configureByText("test.php", "<?php\n" +
+        configureByText("<?php\n" +
             " function test()" +
             " {" +
             " }"
         );
+        PsiFile psiFile = myFixture.getFile();
 
         Document document = PsiDocumentManager.getInstance(getProject()).getDocument(psiFile);
         Function function = PsiTreeUtil.findChildOfType(psiFile, Function.class);
@@ -54,7 +55,7 @@ public class PhpUnitPluginUtilTest extends PhpUnitLightCodeInsightFixtureTestCas
     }
 
     public void testInsertExpectedExceptionForDocBlockUpdate() {
-        PsiFile psiFile = myFixture.configureByText("test.php", "<?php\n" +
+        configureByText("<?php\n" +
             "/**\n" +
             " * @Foo\n" +
             " * @return Foo\n" +
@@ -63,6 +64,7 @@ public class PhpUnitPluginUtilTest extends PhpUnitLightCodeInsightFixtureTestCas
             "{\n" +
             "}\n"
         );
+        PsiFile psiFile = myFixture.getFile();
 
         Document document = PsiDocumentManager.getInstance(getProject()).getDocument(psiFile);
         Function function = PsiTreeUtil.findChildOfType(psiFile, Function.class);

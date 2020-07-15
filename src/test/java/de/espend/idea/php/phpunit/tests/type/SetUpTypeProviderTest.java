@@ -1,7 +1,6 @@
 package de.espend.idea.php.phpunit.tests.type;
 
 import com.intellij.patterns.PlatformPatterns;
-import com.jetbrains.php.lang.PhpFileType;
 import com.jetbrains.php.lang.psi.elements.Method;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
@@ -22,7 +21,8 @@ public class SetUpTypeProviderTest extends PhpUnitLightCodeInsightFixtureTestCas
     }
 
     public void testThatSetUpTypesForFieldReferencesAreProvided() {
-        assertPhpReferenceResolveTo(PhpFileType.INSTANCE, "<?php" +
+        configureByText(
+            "<?php" +
             "    class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
             "    {\n" +
             "        public function setUp()\n" +
@@ -34,46 +34,48 @@ public class SetUpTypeProviderTest extends PhpUnitLightCodeInsightFixtureTestCas
             "        {\n" +
             "            $this->fake->getFo<caret>obar();\n" +
             "        }\n" +
-            "    }",
-            PlatformPatterns.psiElement(Method.class).withName("getFoobar")
+            "    }"
         );
+        assertPhpReferenceResolveTo(PlatformPatterns.psiElement(Method.class).withName("getFoobar"));
     }
 
     public void _testThatSetUpTypesForFieldReferencesAreProvidedForCreateMock() {
         // @TODO: index access problems prevents a stable test?
 
-        assertPhpReferenceResolveTo(PhpFileType.INSTANCE, "<?php" +
-                "    class FooBarTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function setUp()\n" +
-                "        {\n" +
-                "            $this->fake = $this->createMock(\\Bar::class);\n" +
-                "        }\n" +
-                "\n" +
-                "        public function itShouldDoFoobar()\n" +
-                "        {\n" +
-                "            $this->fake->getFo<caret>obar();\n" +
-                "        }\n" +
-                "    }",
-            PlatformPatterns.psiElement(Method.class).withName("getFoobar")
+        configureByText(
+            "<?php" +
+            "    class FooBarTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function setUp()\n" +
+            "        {\n" +
+            "            $this->fake = $this->createMock(\\Bar::class);\n" +
+            "        }\n" +
+            "\n" +
+            "        public function itShouldDoFoobar()\n" +
+            "        {\n" +
+            "            $this->fake->getFo<caret>obar();\n" +
+            "        }\n" +
+            "    }"
         );
+        assertPhpReferenceResolveTo(PlatformPatterns.psiElement(Method.class).withName("getFoobar"));
     }
 
     public void testThatSetUpTypesForFieldReferencesWithMultipleAssignmentsAreProvided() {
-        assertPhpReferenceResolveTo(PhpFileType.INSTANCE, "<?php" +
-                "    class FooBarBarTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function setUp()\n" +
-                "        {\n" +
-                "            $this->fake = $this->prophesize(\\Bar::class);\n" +
-                "        }\n" +
-                "\n" +
-                "        public function itShouldDoFoobar()\n" +
-                "        {\n" +
-                "            $this->fake->getFo<caret>obar();\n" +
-                "        }\n" +
-                "    }",
-            PlatformPatterns.psiElement(Method.class).withName("getFoobar")
+        configureByText(
+            "<?php" +
+            "    class FooBarBarTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function setUp()\n" +
+            "        {\n" +
+            "            $this->fake = $this->prophesize(\\Bar::class);\n" +
+            "        }\n" +
+            "\n" +
+            "        public function itShouldDoFoobar()\n" +
+            "        {\n" +
+            "            $this->fake->getFo<caret>obar();\n" +
+            "        }\n" +
+            "    }"
         );
+        assertPhpReferenceResolveTo(PlatformPatterns.psiElement(Method.class).withName("getFoobar"));
     }
 }

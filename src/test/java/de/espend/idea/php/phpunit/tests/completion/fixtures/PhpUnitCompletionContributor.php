@@ -2,9 +2,19 @@
 
 namespace Foo
 {
+    /**
+     * @mixin Baz
+     */
     class Bar
     {
         public function getFoobar()
+        {
+        }
+    }
+
+    class Baz
+    {
+        public function getFoobaz()
         {
         }
     }

@@ -1,6 +1,5 @@
 package de.espend.idea.php.phpunit.tests.completion;
 
-import com.jetbrains.php.lang.PhpFileType;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
 /**
@@ -18,50 +17,53 @@ public class PhpUnitCompletionContributorTest extends PhpUnitLightCodeInsightFix
     }
 
     public void testThatChainingCreateMockProvidesMethodCompletion() {
-        assertCompletionContains(PhpFileType.INSTANCE, "<?php\n" +
-                "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
-                "{\n" +
-                "   public function foobar()\n" +
-                "   {\n" +
-                "       $foo = $this->createMock(\\Foo\\Bar::class);\n" +
-                "       $foo->method('<caret>')\n" +
-                "   }\n" +
-                "}",
-            "getFoobar"
+        configureByText(
+            "<?php\n" +
+            "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobar()\n" +
+            "   {\n" +
+            "       $foo = $this->createMock(\\Foo\\Bar::class);\n" +
+            "       $foo->method('<caret>')\n" +
+            "   }\n" +
+            "}"
         );
+        assertCompletionContains("getFoobar");
 
-        assertCompletionContains(PhpFileType.INSTANCE, "<?php\n" +
-                "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
-                "{\n" +
-                "" +
-                "   public function setUp()\n" +
-                "   {\n" +
-                "       $this->foo = $this->createMock('Foo\\Bar');\n" +
-                "   }\n" +
-                "" +
-                "   public function foobar()\n" +
-                "   {\n" +
-                "       $this->foo->method('<caret>');\n" +
-                "   }\n" +
-                "}",
-            "getFoobar"
+        configureByText(
+            "<?php\n" +
+            "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "" +
+            "   public function setUp()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
+            "   }\n" +
+            "" +
+            "   public function foobar()\n" +
+            "   {\n" +
+            "       $this->foo->method('<caret>');\n" +
+            "   }\n" +
+            "}"
         );
+        assertCompletionContains("getFoobar");
 
-        assertCompletionContains(PhpFileType.INSTANCE, "<?php\n" +
-                "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
-                "{\n" +
-                "" +
-                "   public function setUp()\n" +
-                "   {\n" +
-                "       $this->foo = $this->createMock('Foo\\Bar');\n" +
-                "   }\n" +
-                "" +
-                "   public function foobar()\n" +
-                "   {\n" +
-                "       $this->foo->method(null)->method('<caret>');\n" +
-                "   }\n" +
-                "}",
-            "getFoobar"
+        configureByText(
+            "<?php\n" +
+            "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "" +
+            "   public function setUp()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
+            "   }\n" +
+            "" +
+            "   public function foobar()\n" +
+            "   {\n" +
+            "       $this->foo->method(null)->method('<caret>');\n" +
+            "   }\n" +
+            "}"
         );
+        assertCompletionContains("getFoobar");
     }
 }

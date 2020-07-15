@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 abstract public class Filter {
-    protected String phpMethod;
+    protected MethodReference phpMethod;
 
     private boolean isMethodsAllowed = false;
     private boolean isFieldsAllowed = false;
@@ -24,30 +24,26 @@ abstract public class Filter {
     private PhpClass phpClass;
 
     public Filter(@NotNull FilterContext context) {
-        MethodReference methodReference = context.getMethodReference();
-        phpMethod = methodReference.getName();
+        phpMethod = context.getMethodReference();
+        allowMethods();
     }
 
-    public String getPhpMethod() {
+    public String getPhpMethodName() {
+        return phpMethod.getName();
+    }
+
+    public MethodReference getPhpMethodReference() {
         return phpMethod;
     }
 
     public void allowMethod(String methodName) {
-        allowMethods();
         disallowedMethods.remove(methodName);
         allowedMethods.add(methodName);
     }
 
     public void disallowMethod(String methodName) {
-        allowMethods();
         allowedMethods.remove(methodName);
         disallowedMethods.add(methodName);
-    }
-
-    public void describeMethods(@NotNull Method[] methods) {
-        describeMethods(Arrays.stream(methods)
-                .map(Method::getName)
-                .collect(Collectors.toList()));
     }
 
     public void describeMethod(String methodName) {
@@ -66,10 +62,22 @@ abstract public class Filter {
         isMethodsAllowed = true;
     }
 
+    public void allowMethods(@NotNull Method[] methods) {
+        allowMethods(Arrays.stream(methods)
+            .map(Method::getName)
+            .collect(Collectors.toList()));
+    }
+
     public void allowMethods(@NotNull List<String> methodNames) {
         for (String methodName : methodNames) {
             allowMethod(methodName);
         }
+    }
+
+    public void describeMethods(@NotNull Method[] methods) {
+        describeMethods(Arrays.stream(methods)
+            .map(Method::getName)
+            .collect(Collectors.toList()));
     }
 
     public void describeMethods(@NotNull List<String> methodNames) {

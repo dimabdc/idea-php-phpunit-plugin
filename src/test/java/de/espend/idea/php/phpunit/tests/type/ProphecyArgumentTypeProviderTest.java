@@ -1,6 +1,5 @@
 package de.espend.idea.php.phpunit.tests.type;
 
-import com.jetbrains.php.lang.PhpFileType;
 import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 import de.espend.idea.php.phpunit.type.ProphecyArgumentTypeProvider;
 
@@ -19,45 +18,48 @@ public class ProphecyArgumentTypeProviderTest extends PhpUnitLightCodeInsightFix
     }
 
     public void testThatProphecyArgumentsProvideTypesForPrimitives() {
-        assertMethodContainsTypes(PhpFileType.INSTANCE, "<?php\n" +
-                "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function testFoobar()\n" +
-                "        {\n" +
-                "            $foo = $this->prophesize(Foo::class);\n" +
-                "            $foo->getBar(\\Prophecy\\Argument::a<caret>ny());\n" +
-                "        }\n" +
-                "    }",
-            "\\array"
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            $foo = $this->prophesize(Foo::class);\n" +
+            "            $foo->getBar(\\Prophecy\\Argument::a<caret>ny());\n" +
+            "        }\n" +
+            "    }"
         );
+        assertMethodContainsTypes("\\array");
 
-        assertMethodContainsTypes(PhpFileType.INSTANCE, "<?php\n" +
-                "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function setUp()\n" +
-                "        {\n" +
-                "            $this->foo = $this->prophesize(Foo::class);\n" +
-                "        }\n" +
-                "        public function testFoobar()\n" +
-                "        {\n" +
-                "            $this->foo->getBar(\\Prophecy\\Argument::a<caret>ny());\n" +
-                "        }\n" +
-                "    }",
-            "\\array"
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function setUp()\n" +
+            "        {\n" +
+            "            $this->foo = $this->prophesize(Foo::class);\n" +
+            "        }\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            $this->foo->getBar(\\Prophecy\\Argument::a<caret>ny());\n" +
+            "        }\n" +
+            "    }"
         );
+        assertMethodContainsTypes("\\array");
     }
 
     public void testThatProphecyArgumentsProvideTypesForClasses() {
-        assertMethodContainsTypes(PhpFileType.INSTANCE, "<?php\n" +
-                "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
-                "    {\n" +
-                "        public function testFoobar()\n" +
-                "        {\n" +
-                "            $foo = $this->prophesize(Foo::class);\n" +
-                "            $foo->getBar(\\Prophecy\\Argument::any(), \\Prophecy\\Argument::a<caret>ny());\n" +
-                "        }\n" +
-                "    }",
-            "\\Foo"
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            $foo = $this->prophesize(Foo::class);\n" +
+            "            $foo->getBar(\\Prophecy\\Argument::any(), \\Prophecy\\Argument::a<caret>ny());\n" +
+            "        }\n" +
+            "    }"
         );
+        assertMethodContainsTypes("\\Foo");
     }
 }

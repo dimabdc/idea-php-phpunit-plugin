@@ -5,7 +5,6 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider;
 import com.intellij.codeInsight.daemon.LineMarkerProviders;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.IntentionManager;
-import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -22,16 +21,15 @@ import java.util.*;
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
 public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCodeInsightFixtureTestCase {
+    private static final String PHPUNIT_TEST_CLASS_FILE_NAME = "FooTest.php";
 
-    public void assertCompletionContains(LanguageFileType languageFileType, String configureByText, String... lookupStrings) {
-
-        myFixture.configureByText(languageFileType, configureByText);
-        myFixture.completeBasic();
-
-        completionContainsAssert(lookupStrings);
+    public void configureByText(String configureByText) {
+        myFixture.configureByText(PHPUNIT_TEST_CLASS_FILE_NAME, configureByText);
     }
 
-    private void completionContainsAssert(String[] lookupStrings) {
+    public void assertCompletionContains(String... lookupStrings) {
+        myFixture.completeBasic();
+
         if (lookupStrings.length == 0) {
             fail("No lookup element given");
         }
@@ -44,6 +42,25 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCo
         for (String s : lookupStrings) {
             if (!lookupElements.contains(s)) {
                 fail(String.format("failed that completion contains %s in %s", s, lookupElements.toString()));
+            }
+        }
+    }
+
+    public void assertCompletionNotContains(String... lookupStrings) {
+        myFixture.completeBasic();
+
+        if (lookupStrings.length == 0) {
+            fail("No lookup element given");
+        }
+
+        List<String> lookupElements = myFixture.getLookupElementStrings();
+        if (lookupElements == null || lookupElements.size() == 0) {
+            return;
+        }
+
+        for (String s : lookupStrings) {
+            if (lookupElements.contains(s)) {
+                fail(String.format("failed that completion not contains %s in %s", s, lookupElements.toString()));
             }
         }
     }
@@ -70,8 +87,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCo
         fail(String.format("Fail that '%s' matches on of '%s' PsiElements", assertMatch.getClass(), elements.size()));
     }
 
-    public void assertIntentionIsAvailable(LanguageFileType languageFileType, String configureByText, String intentionText) {
-        myFixture.configureByText(languageFileType, configureByText);
+    public void assertIntentionIsAvailable(String intentionText) {
         PsiElement psiElement = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
 
         Set<String> items = new HashSet<>();
@@ -94,8 +110,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCo
         fail(String.format("Fail intention action '%s' is available in element '%s' with '%s'", intentionText, psiElement.getText(), items));
     }
 
-    public void assertPhpReferenceResolveTo(LanguageFileType languageFileType, String configureByText, ElementPattern<?> pattern) {
-        myFixture.configureByText(languageFileType, configureByText);
+    public void assertPhpReferenceResolveTo(ElementPattern<?> pattern) {
         PsiElement psiElement = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
 
         psiElement = PsiTreeUtil.getParentOfType(psiElement, PhpReference.class);
@@ -111,8 +126,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCo
         assertTrue(pattern.accepts(resolve));
     }
 
-    public void assertPhpReferenceNotResolveTo(LanguageFileType languageFileType, String configureByText, ElementPattern<?> pattern) {
-        myFixture.configureByText(languageFileType, configureByText);
+    public void assertPhpReferenceNotResolveTo(ElementPattern<?> pattern) {
         PsiElement psiElement = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
 
         psiElement = PsiTreeUtil.getParentOfType(psiElement, PhpReference.class);
@@ -123,8 +137,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCo
         assertFalse(pattern.accepts(((PhpReference) psiElement).resolve()));
     }
 
-    public void assertReferencesMatch(LanguageFileType languageFileType, String configureByText, ElementPattern<?> pattern) {
-        myFixture.configureByText(languageFileType, configureByText);
+    public void assertReferencesMatch(ElementPattern<?> pattern) {
         PsiElement psiElement = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
 
         // get parent for references; mostly we are inside a token element
@@ -155,8 +168,7 @@ public abstract class PhpUnitLightCodeInsightFixtureTestCase extends LightJavaCo
         fail(String.format("Failed pattern matches element of '%d' elements", parent.getReferences().length));
     }
 
-    public void assertMethodContainsTypes(@NotNull LanguageFileType languageFileType, @NotNull String configureByText, @NotNull String... types) {
-        myFixture.configureByText(languageFileType, configureByText);
+    public void assertMethodContainsTypes(@NotNull String... types) {
         PsiElement psiElement = myFixture.getFile().findElementAt(myFixture.getCaretOffset());
 
         psiElement = PsiTreeUtil.getParentOfType(psiElement, PhpTypedElement.class);
