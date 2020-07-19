@@ -3,6 +3,7 @@
 namespace Foo
 {
     /**
+     * @method getFoo()
      * @mixin BazBar
      */
     class Bar extends Baz

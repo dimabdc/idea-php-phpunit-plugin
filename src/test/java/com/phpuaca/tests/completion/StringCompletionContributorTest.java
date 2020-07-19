@@ -24,7 +24,7 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "   }\n" +
             "}"
         );
-        assertCompletionContains("getFoobar", "getFoobaz", "getFoobazbar");
+        assertCompletionContains("getFoobar", "getFoobaz", "getFoobazbar", "getFoo");
 
         configureByText(
             "<?php\n" +
@@ -37,12 +37,13 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "               'getFoobar'\n" +
             "               'getFoobaz'\n" +
             "               'getFoobazbar'\n" +
+            "               'getFoo'\n" +
             "               '<caret>'\n" +
             "           ])\n" +
             "   }\n" +
             "}"
         );
-        assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar");
+        assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar", "getFoo");
     }
 
     public void testCompleteOnlyMethods() {
@@ -58,7 +59,7 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "}"
         );
         assertCompletionContains("getFoobar", "getFoobaz");
-        assertCompletionNotContains("getFoobazbar");
+        assertCompletionNotContains("getFoobazbar", "getFoo");
 
         configureByText(
             "<?php\n" +
@@ -75,7 +76,7 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "   }\n" +
             "}"
         );
-        assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar");
+        assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar", "getFoo");
     }
 
     public void testCompleteAddMethods() {
@@ -90,7 +91,7 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "   }\n" +
             "}"
         );
-        assertCompletionContains("getFoobazbar");
+        assertCompletionContains("getFoobazbar", "getFoo");
         assertCompletionNotContains("getFoobar", "getFoobaz");
 
         configureByText(
@@ -102,11 +103,12 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "       $foo = $this->getMockBuilder(\\Foo\\Bar::class)\n" +
             "           ->addMethods([\n" +
             "               'getFoobazbar'\n" +
+            "               'getFoo'\n" +
             "               '<caret>'\n" +
             "           ])\n" +
             "   }\n" +
             "}"
         );
-        assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar");
+        assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar", "getFoo");
     }
 }

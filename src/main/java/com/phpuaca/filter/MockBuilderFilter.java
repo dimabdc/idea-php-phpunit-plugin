@@ -1,5 +1,6 @@
 package com.phpuaca.filter;
 
+import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocMethod;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.phpuaca.filter.util.ClassFinder;
 import com.phpuaca.filter.util.Result;
@@ -54,8 +55,11 @@ public class MockBuilderFilter extends Filter {
 
         do {
             Method[] classOwnMethods = mockClass.getOwnMethods();
-            if (classOwnMethods.length > 0) {
-                methods.addAll(Arrays.asList(classOwnMethods));
+            for (Method method : classOwnMethods) {
+                if (method instanceof PhpDocMethod) {
+                    continue;
+                }
+                methods.add(method);
             }
 
             for (PhpClass trait : mockClass.getTraits()) {
