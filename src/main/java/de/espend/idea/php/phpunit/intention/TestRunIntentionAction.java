@@ -50,7 +50,7 @@ public class TestRunIntentionAction extends PsiElementBaseIntentionAction {
     @NotNull
     @Override
     public String getFamilyName() {
-        return "PHPUnit";
+        return "Run Test";
     }
 
     @NotNull

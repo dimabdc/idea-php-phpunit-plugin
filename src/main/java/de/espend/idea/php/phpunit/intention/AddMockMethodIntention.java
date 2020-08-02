@@ -106,7 +106,7 @@ public class AddMockMethodIntention extends PsiElementBaseIntentionAction {
     @NotNull
     @Override
     public String getFamilyName() {
-        return "PHPUnit";
+        return "Add mock method";
     }
 
     @NotNull

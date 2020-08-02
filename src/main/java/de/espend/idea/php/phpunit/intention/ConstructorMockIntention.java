@@ -77,7 +77,7 @@ public class ConstructorMockIntention extends PsiElementBaseIntentionAction {
     @NotNull
     @Override
     public String getFamilyName() {
-        return "PHPUnit";
+        return "Add constructor mocks";
     }
 
     @NotNull

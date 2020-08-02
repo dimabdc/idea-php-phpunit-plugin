@@ -76,7 +76,7 @@ public class MethodExceptionIntentionAction extends PsiElementBaseIntentionActio
     @NotNull
     @Override
     public String getFamilyName() {
-        return "PHPUnit";
+        return "Expected exception";
     }
 
     @NotNull
