@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FilterConfig {
-    Map<String, FilterConfigItem> config;
+    Map<String, FilterConfigGroup> config;
 
     public FilterConfig() {
         config = new HashMap<>();
@@ -17,30 +17,43 @@ public class FilterConfig {
     }
 
     public FilterConfig add(FilterConfigItem filterConfigItem) {
-        String hash = createHash(filterConfigItem.getClassName(), filterConfigItem.getMethodName());
-        config.put(hash, filterConfigItem);
+        FilterConfigGroup group = getGroup(filterConfigItem);
+        group.add(filterConfigItem);
         return this;
     }
 
     @Nullable
     public FilterConfigItem getItem(String className, String methodName) {
-        String hash = createHash(className, methodName);
-        return config.get(hash);
+        FilterConfigGroup group = getGroup(className);
+        return group.getItem(methodName);
     }
 
     @Nullable
     public FilterConfigItem getItem(String methodName) {
-        String hash = createHash("", methodName);
-        for (Map.Entry<String, FilterConfigItem> entry : config.entrySet()) {
-            if (entry.getKey().endsWith(hash)) {
-                return entry.getValue();
+        for (FilterConfigGroup entry : config.values()) {
+            FilterConfigItem item = entry.getItem(methodName);
+            if (item != null) {
+                return item;
             }
         }
 
         return null;
     }
 
-    private String createHash(String className, String methodName) {
-        return className + "::" + methodName;
+    private FilterConfigGroup getGroup(FilterConfigItem filterConfigItem) {
+        String className = filterConfigItem.getClassName();
+        FilterConfigGroup group = getGroup(className);
+        config.putIfAbsent(className, group);
+
+        return group;
+    }
+
+    public FilterConfigGroup getGroup(String className) {
+        FilterConfigGroup group = config.get(className);
+        if (null == group) {
+            group = new FilterConfigGroup();
+        }
+
+        return group;
     }
 }

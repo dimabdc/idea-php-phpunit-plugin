@@ -22,12 +22,16 @@ public class StringCompletionProvider extends CompletionProvider<CompletionParam
     @Override
     protected void addCompletions(@NotNull CompletionParameters completionParameters, @NotNull ProcessingContext processingContext, @NotNull CompletionResultSet completionResultSet) {
         PsiElement originalPosition = completionParameters.getOriginalPosition();
-        if (originalPosition != null) {
-            Filter filter = FilterFactory.getInstance().getFilter(originalPosition.getParent());
-            if (filter != null) {
-                completionResultSet.addAllElements(getLookupElements(filter));
-            }
+        if (originalPosition == null) {
+            return;
         }
+
+        Filter filter = FilterFactory.getInstance().getFilter(originalPosition.getParent());
+        if (filter == null) {
+            return;
+        }
+
+        completionResultSet.addAllElements(getLookupElements(filter));
     }
 
     @NotNull
