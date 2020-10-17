@@ -28,6 +28,38 @@ namespace Foo
     }
 }
 
+namespace Bar
+{
+    /**
+     * @method getFooBar()
+     * @mixin BazBar
+     */
+    interface Foo extends Bar, Baz
+    {
+        public function getFoo();
+    }
+
+    interface Bar extends BarFoo
+    {
+        public function getBar();
+    }
+
+    interface BarFoo
+    {
+        public function getBarFoo();
+    }
+
+    interface Baz
+    {
+        public function getBaz();
+    }
+
+    interface BazBar
+    {
+        public function getBazBar();
+    }
+}
+
 namespace PHPUnit\Framework
 {
     use PHPUnit\Framework\MockObject\MockBuilder;

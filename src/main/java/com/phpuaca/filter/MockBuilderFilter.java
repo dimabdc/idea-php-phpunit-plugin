@@ -6,10 +6,7 @@ import com.phpuaca.filter.util.ClassFinder;
 import com.phpuaca.filter.util.Result;
 import com.phpuaca.util.PhpArrayParameter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MockBuilderFilter extends Filter {
 
@@ -52,24 +49,45 @@ public class MockBuilderFilter extends Filter {
 
     private Method[] getClassMethods(PhpClass mockClass) {
         List<Method> methods = new ArrayList<>();
-
         do {
-            Method[] classOwnMethods = mockClass.getOwnMethods();
-            for (Method method : classOwnMethods) {
-                if (method instanceof PhpDocMethod) {
-                    continue;
-                }
-                methods.add(method);
+            if (mockClass.isInterface()) {
+                Collections.addAll(methods, getInterfaceMethods(mockClass));
             }
 
-            for (PhpClass trait : mockClass.getTraits()) {
-                classOwnMethods = getClassMethods(trait);
-                if (classOwnMethods.length > 0) {
-                    methods.addAll(Arrays.asList(classOwnMethods));
-                }
-            }
+            Collections.addAll(methods, getClassOwnMethods(mockClass));
+            Collections.addAll(methods, getClassTraitMethods(mockClass));
         } while ((mockClass = mockClass.getSuperClass()) != null);
 
-        return methods.toArray(new Method[0]);
+        return methods.toArray(Method.EMPTY);
+    }
+
+    private Method[] getInterfaceMethods(PhpClass mockClasses) {
+        List<Method> methods = new ArrayList<>();
+        for (PhpClass mockInterface: mockClasses.getImplementedInterfaces()) {
+            Collections.addAll(methods, getClassMethods(mockInterface));
+        }
+
+        return methods.toArray(Method.EMPTY);
+    }
+
+    private Method[] getClassOwnMethods(PhpClass mockClass) {
+        List<Method> methods = new ArrayList<>();
+        for (Method method : mockClass.getOwnMethods()) {
+            if (method instanceof PhpDocMethod) {
+                continue;
+            }
+            methods.add(method);
+        }
+
+        return methods.toArray(Method.EMPTY);
+    }
+
+    private Method[] getClassTraitMethods(PhpClass mockClass) {
+        List<Method> methods = new ArrayList<>();
+        for (PhpClass mockTrait : mockClass.getTraits()) {
+            Collections.addAll(methods, getClassMethods(mockTrait));
+        }
+
+        return methods.toArray(Method.EMPTY);
     }
 }
