@@ -2,10 +2,7 @@ package com.phpuaca.filter;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.php.lang.psi.elements.ArrayCreationExpression;
-import com.jetbrains.php.lang.psi.elements.Method;
-import com.jetbrains.php.lang.psi.elements.MethodReference;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.jetbrains.php.lang.psi.elements.*;
 import com.phpuaca.util.PhpMethodResolver;
 import com.phpuaca.util.PhpParameter;
 import org.jetbrains.annotations.NotNull;
@@ -50,22 +47,32 @@ final public class FilterFactory {
             return null;
         }
 
-        PhpParameter phpParameter = new PhpParameter(parameter);
-        PhpClass resolvedClass = resolvedMethod.getContainingClass();
+        PhpClass resolvedClass = resolveOriginalClass(resolvedMethod.getContainingClass());
         if (resolvedClass == null) {
             return null;
         }
 
-        String methodName = resolvedMethod.getName();
-        int parameterNumber = phpParameter.getNumber();
+        int parameterNumber = (new PhpParameter(parameter)).getNumber();
+
+        FilterConfigItem filterConfigItem = config.getItem(resolvedClass.getFQN(), resolvedMethod.getName());
+        if (filterConfigItem != null && filterConfigItem.getParameterNumber() == parameterNumber) {
+            Class<?> filterClass = filterConfigItem.getFilterClass();
+            FilterContext filterContext = new FilterContext(filterConfigItem, methodReference);
+            return getFilter(filterClass, filterContext);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private PhpClass resolveOriginalClass(@Nullable PhpClass resolvedClass) {
+        if (resolvedClass == null) {
+            return null;
+        }
 
         do {
-            String className = resolvedClass.getFQN();
-            FilterConfigItem filterConfigItem = config.getItem(className, methodName);
-            if (filterConfigItem != null && filterConfigItem.getParameterNumber() == parameterNumber) {
-                Class<?> filterClass = filterConfigItem.getFilterClass();
-                FilterContext filterContext = new FilterContext(filterConfigItem, methodReference);
-                return getFilter(filterClass, filterContext);
+            if (config.hasClass(resolvedClass.getFQN())) {
+                return resolvedClass;
             }
         }
         while ((resolvedClass = resolvedClass.getSuperClass()) != null);

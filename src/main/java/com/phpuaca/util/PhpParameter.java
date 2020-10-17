@@ -4,15 +4,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.php.lang.psi.elements.ParameterList;
 import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PhpParameter {
 
-    final private static int NUMBER_UNDEFINED = -1;
-    final private static int NUMBER_NOT_FOUND = -2;
+    final private static int NUMBER_NOT_FOUND = -1;
+    final private static int NUMBER_UNDEFINED = -2;
 
-    private PsiElement parameter;
+    private final PsiElement parameter;
     private int number;
 
     public PhpParameter(@NotNull PsiElement parameter) {
@@ -38,13 +39,9 @@ public class PhpParameter {
     private int calcNumber() {
         ParameterList parameterList = PsiTreeUtil.getParentOfType(parameter, ParameterList.class);
         if (parameterList != null) {
-            int i = 1;
-            for (PsiElement p : parameterList.getParameters()) {
-                if (p.equals(parameter)) {
-                    return i;
-                }
-
-                i++;
+            int index = ArrayUtils.indexOf(parameterList.getParameters(), parameter);
+            if (index >= 0) {
+                return index + 1;
             }
         }
 
