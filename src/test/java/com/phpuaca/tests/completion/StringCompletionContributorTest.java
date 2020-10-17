@@ -68,7 +68,7 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "   public function foobar()\n" +
             "   {\n" +
             "       $foo = $this->getMockBuilder(\\Foo\\Bar::class)\n" +
-            "           ->setMethods([\n" +
+            "           ->onlyMethods([\n" +
             "               'getFoobar'\n" +
             "               'getFoobaz'\n" +
             "               '<caret>'\n" +
@@ -110,5 +110,109 @@ public class StringCompletionContributorTest extends PhpUnitLightCodeInsightFixt
             "}"
         );
         assertCompletionNotContains("getFoobar", "getFoobaz", "getFoobazbar", "getFoo");
+    }
+
+    public void testCompleteSetMethodsInterface() {
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobarTest()\n" +
+            "   {\n" +
+            "       $foo = $this->getMockBuilder(\\Bar\\Foo::class)\n" +
+            "           ->setMethods(['<caret>'])\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoo", "getBar", "getBarFoo", "getBaz", "getBazBar", "getFooBar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobarTest()\n" +
+            "   {\n" +
+            "       $foo = $this->getMockBuilder(\\Bar\\Foo::class)\n" +
+            "           ->setMethods([\n" +
+            "               'getFoo'\n" +
+            "               'getBar'\n" +
+            "               'getBarFoo'\n" +
+            "               'getBaz'\n" +
+            "               'getBazBar'\n" +
+            "               'getFooBar'\n" +
+            "               '<caret>'\n" +
+            "           ])\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionNotContains("getFoo", "getBar", "getBarFoo", "getBaz", "getBazBar", "getFooBar");
+    }
+
+    public void testCompleteOnlyMethodsInterface() {
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobarTest()\n" +
+            "   {\n" +
+            "       $foo = $this->getMockBuilder(\\Bar\\Foo::class)\n" +
+            "           ->onlyMethods(['<caret>'])\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoo", "getBar", "getBarFoo", "getBaz");
+        assertCompletionNotContains("getBazBar", "getFooBar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobarTest()\n" +
+            "   {\n" +
+            "       $foo = $this->getMockBuilder(\\Bar\\Foo::class)\n" +
+            "           ->setMethods([\n" +
+            "               'getFoo'\n" +
+            "               'getBar'\n" +
+            "               'getBarFoo'\n" +
+            "               'getBaz'\n" +
+            "               '<caret>'\n" +
+            "           ])\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionNotContains("getFoo", "getBar", "getBarFoo", "getBaz", "getBazBar", "getFooBar");
+    }
+
+    public void testCompleteAddMethodsInterface() {
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobarTest()\n" +
+            "   {\n" +
+            "       $foo = $this->getMockBuilder(\\Bar\\Foo::class)\n" +
+            "           ->addMethods(['<caret>'])\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getBazBar", "getFooBar");
+        assertCompletionNotContains("getFoo", "getBar", "getBarFoo", "getBaz");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "   public function foobarTest()\n" +
+            "   {\n" +
+            "       $foo = $this->getMockBuilder(\\Bar\\Foo::class)\n" +
+            "           ->addMethods([\n" +
+            "               'getBazBar'\n" +
+            "               'getFooBar'\n" +
+            "               '<caret>'\n" +
+            "           ])\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionNotContains("getBazBar", "getFooBar", "getFoo", "getBar", "getBarFoo", "getBaz");
     }
 }
