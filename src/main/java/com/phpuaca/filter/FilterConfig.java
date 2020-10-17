@@ -40,6 +40,10 @@ public class FilterConfig {
         return null;
     }
 
+    public boolean hasClass(String className) {
+        return config.get(className) != null;
+    }
+
     private FilterConfigGroup getGroup(FilterConfigItem filterConfigItem) {
         String className = filterConfigItem.getClassName();
         FilterConfigGroup group = getGroup(className);
@@ -48,7 +52,7 @@ public class FilterConfig {
         return group;
     }
 
-    public FilterConfigGroup getGroup(String className) {
+    private FilterConfigGroup getGroup(String className) {
         FilterConfigGroup group = config.get(className);
         if (null == group) {
             group = new FilterConfigGroup();

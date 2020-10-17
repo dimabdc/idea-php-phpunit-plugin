@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class FilterContext {
 
-    private FilterConfigItem filterConfigItem;
-    private MethodReference methodReference;
+    private final FilterConfigItem filterConfigItem;
+    private final MethodReference methodReference;
 
     public FilterContext(@NotNull FilterConfigItem filterConfigItem, @NotNull MethodReference methodReference) {
         this.filterConfigItem = filterConfigItem;
