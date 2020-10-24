@@ -21,10 +21,8 @@ import com.jetbrains.php.lang.psi.PhpFile;
 import com.jetbrains.php.lang.psi.PhpPsiElementFactory;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.phpunit.PhpUnitRuntimeConfigurationProducer;
-import de.espend.idea.php.phpunit.utils.processor.CreateMockMethodReferenceProcessor;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
@@ -110,27 +108,6 @@ public class PhpUnitPluginUtil {
         }
 
         return false;
-    }
-
-    /**
-     * $foo = $this->createMock('Foobar')
-     * $foo->method('<caret>')
-     */
-    @Nullable
-    public static String findCreateMockParameterOnParameterScope(@NotNull StringLiteralExpression psiElement) {
-        PsiElement parameterList = psiElement.getParent();
-        if (parameterList instanceof ParameterList) {
-            PsiElement methodReference = parameterList.getParent();
-            if (methodReference instanceof MethodReference && (
-                PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\MockObject", "method") ||
-                    PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Builder\\InvocationMocker", "method") ||
-                    PhpElementsUtil.isMethodReferenceOf((MethodReference) methodReference, "PHPUnit\\Framework\\MockObject\\Stub", "method")
-            )) {
-                return CreateMockMethodReferenceProcessor.createParameter((MethodReference) methodReference);
-            }
-        }
-
-        return null;
     }
 
     /**

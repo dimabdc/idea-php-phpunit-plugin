@@ -3,12 +3,12 @@ package de.espend.idea.php.phpunit.type;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.MultiMap;
 import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.psi.PhpPsiUtil;
 import com.jetbrains.php.lang.psi.elements.*;
+import com.jetbrains.php.lang.psi.elements.impl.PhpClassImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider4;
-import de.espend.idea.php.phpunit.utils.PhpUnitPluginUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,30 +36,33 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
     @Override
     public PhpType getType(PsiElement element) {
         if(element instanceof FieldReference) {
-            String name = ((FieldReference) element).getName();
-            if(name != null) {
-                // find method scope, we not directly search for class as Method is our parent scope
-                Method methodScope = PhpPsiUtil.getParentByCondition(element, Method.INSTANCEOF);
-                if(methodScope != null) {
-                    PhpClass phpClass = methodScope.getContainingClass();
-                    if(phpClass != null && PhpUnitPluginUtil.isTestClassWithoutIndexAccess(phpClass)) {
-                        Method method = phpClass.findOwnMethodByName("setUp");
+            String variableName = ((FieldReference)element).getName();
+            if (variableName == null) {
+                return null;
+            }
 
-                        // "setUp" is our "constructor" for test classes
-                        if(method != null) {
-                            for (AssignmentExpression assignmentExpression : PsiTreeUtil.collectElementsOfType(method, AssignmentExpression.class)) {
-                                PhpPsiElement variable = assignmentExpression.getVariable();
+            PsiElement field = ((FieldReference)element).resolve();
+            if (field != null) {
+                return ((Field)field).getType();
+            }
 
-                                // remember or field name and attach is for a later resolve
-                                if(variable instanceof FieldReference && name.equals(variable.getName())) {
-                                    return new PhpType().add(
-                                        "#" + this.getKey() + StringUtils.stripStart(phpClass.getFQN(), "\\") + String.valueOf(TRIM_KEY) + method.getName() + String.valueOf(TRIM_KEY) + name
-                                    );
-                                }
-                            }
-                        }
+            PhpClass phpClass = PsiTreeUtil.getParentOfType(element, PhpClass.class);
+            if (phpClass == null) {
+                return null;
+            }
 
-                    }
+            MultiMap<String, AssignmentExpression> accessMap = PhpClassImpl.getPhpUnitSetUpAssignmentsPerField(phpClass);
+            if (!accessMap.containsKey(((FieldReference)element).getName())) {
+                return null;
+            }
+
+            Collection<AssignmentExpression> expressions = accessMap.get(((FieldReference)element).getName());
+            for (AssignmentExpression expression : expressions) {
+                PhpPsiElement variable = expression.getVariable();
+                if (variable instanceof FieldReference && variableName.equals(variable.getName())) {
+                    return new PhpType().add(
+                        "#" + this.getKey() + StringUtils.stripStart(phpClass.getFQN(), "\\") + TRIM_KEY + variableName
+                    );
                 }
             }
         }
@@ -77,7 +80,7 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
     public Collection<? extends PhpNamedElement> getBySignature(String expression, Set<String> visited, int depth, Project project) {
         // split: CLASS|setUp|FIELD_NAME
         String[] split = expression.split(String.valueOf(TRIM_KEY));
-        if(split.length != 3) {
+        if(split.length != 2) {
             return null;
         }
 
@@ -95,7 +98,7 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
             for (AssignmentExpression assignmentExpression : PsiTreeUtil.collectElementsOfType(setUp, AssignmentExpression.class)) {
                 PhpPsiElement variable = assignmentExpression.getVariable();
 
-                if(!(variable instanceof FieldReference) || !split[2].equals(variable.getName())) {
+                if(!(variable instanceof FieldReference) || !split[1].equals(variable.getName())) {
                     continue;
                 }
 

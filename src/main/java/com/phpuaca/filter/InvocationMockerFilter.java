@@ -1,20 +1,14 @@
 package com.phpuaca.filter;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.php.lang.psi.elements.MethodReference;
-import com.jetbrains.php.lang.psi.elements.ParameterList;
-import com.jetbrains.php.lang.psi.elements.PhpModifier;
-import com.jetbrains.php.lang.psi.elements.Variable;
+import com.jetbrains.php.lang.psi.elements.*;
 import com.phpuaca.filter.util.ClassFinder;
 import com.phpuaca.filter.util.Result;
-import com.phpuaca.util.PhpArrayParameter;
-import com.phpuaca.util.PhpMethodChain;
-import com.phpuaca.util.PhpVariable;
+import com.phpuaca.util.*;
 import com.sun.istack.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class InvocationMockerFilter extends Filter {
     protected String method;
@@ -22,8 +16,8 @@ public class InvocationMockerFilter extends Filter {
     public InvocationMockerFilter(FilterContext context) {
         super(context);
 
-        Variable variable = (Variable) PsiTreeUtil.getDeepestFirst(context.getMethodReference()).getParent();
-        MethodReference methodReference = (new PhpVariable(variable)).findClosestAssignment();
+        PsiElement variable = PsiTreeUtil.findChildOfAnyType(context.getMethodReference(), Variable.class, FieldReference.class);
+        MethodReference methodReference = getPhpElement(variable).findClosestAssignment();
 
         if (methodReference == null) {
             return;
@@ -68,5 +62,13 @@ public class InvocationMockerFilter extends Filter {
             }
         }
         return false;
+    }
+
+    private PhpElement getPhpElement(PsiElement element) {
+        if (element instanceof Variable) {
+            return new PhpVariable((Variable) element);
+        }
+
+        return new PhpFieldReference((FieldReference) element);
     }
 }
