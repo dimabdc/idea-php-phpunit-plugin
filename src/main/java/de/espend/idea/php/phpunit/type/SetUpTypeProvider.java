@@ -5,10 +5,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.MultiMap;
 import com.jetbrains.php.PhpIndex;
+import com.jetbrains.php.lang.psi.PhpPsiUtil;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.elements.impl.PhpClassImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider4;
+import com.jetbrains.php.phpunit.PhpUnitUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,14 +38,19 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
     @Override
     public PhpType getType(PsiElement element) {
         if(element instanceof FieldReference) {
+            Method method = PhpPsiUtil.getParentByCondition(element, Method.INSTANCEOF);
+            if (method == null || PhpUnitUtil.isTestMethod(method)) {
+                return null;
+            }
+
             String variableName = ((FieldReference)element).getName();
             if (variableName == null) {
                 return null;
             }
 
             PsiElement field = ((FieldReference)element).resolve();
-            if (field != null) {
-                return ((Field)field).getType();
+            if (field != null) { // if field is declared in class
+                return null;
             }
 
             PhpClass phpClass = PsiTreeUtil.getParentOfType(element, PhpClass.class);
