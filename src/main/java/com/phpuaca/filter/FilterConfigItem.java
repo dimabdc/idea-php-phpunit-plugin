@@ -2,12 +2,12 @@ package com.phpuaca.filter;
 
 public class FilterConfigItem {
 
-    private String className;
-    private String methodName;
-    private int parameterNumber;
-    private Class filterClass;
+    private final String className;
+    private final String methodName;
+    private final int parameterNumber;
+    private final Class<?> filterClass;
 
-    public FilterConfigItem(String className, String methodName, int parameterNumber, Class filterClass) {
+    public FilterConfigItem(String className, String methodName, int parameterNumber, Class<?> filterClass) {
         this.className = className;
         this.methodName = methodName;
         this.parameterNumber = parameterNumber;
@@ -26,7 +26,7 @@ public class FilterConfigItem {
         return parameterNumber;
     }
 
-    public Class getFilterClass() {
+    public Class<?> getFilterClass() {
         return filterClass;
     }
 }

@@ -3,6 +3,7 @@ package com.phpuaca.filter.util;
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.Variable;
+import com.jetbrains.php.lang.psi.elements.impl.PhpClassImpl;
 import com.phpuaca.filter.FilterConfigItem;
 import com.phpuaca.filter.FilterFactory;
 import com.phpuaca.util.PhpClassResolver;

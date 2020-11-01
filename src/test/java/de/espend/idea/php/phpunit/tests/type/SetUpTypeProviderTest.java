@@ -25,6 +25,9 @@ public class SetUpTypeProviderTest extends PhpUnitLightCodeInsightFixtureTestCas
             "<?php" +
             "    class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
             "    {\n" +
+            "\n" +
+            "        private $fake;\n" +
+            "\n" +
             "        public function setUp()\n" +
             "        {\n" +
             "            $this->fake = $this->prophesize(\\Bar::class);\n" +
@@ -46,6 +49,9 @@ public class SetUpTypeProviderTest extends PhpUnitLightCodeInsightFixtureTestCas
             "<?php" +
             "    class FooBarTest extends \\PHPUnit\\Framework\\TestCase\n" +
             "    {\n" +
+            "\n" +
+            "        private $fake;\n" +
+            "\n" +
             "        public function setUp()\n" +
             "        {\n" +
             "            $this->fake = $this->createMock(\\Bar::class);\n" +
@@ -65,6 +71,9 @@ public class SetUpTypeProviderTest extends PhpUnitLightCodeInsightFixtureTestCas
             "<?php" +
             "    class FooBarBarTest extends \\PHPUnit\\Framework\\TestCase\n" +
             "    {\n" +
+            "\n" +
+            "        private $fake;\n" +
+            "\n" +
             "        public function setUp()\n" +
             "        {\n" +
             "            $this->fake = $this->prophesize(\\Bar::class);\n" +

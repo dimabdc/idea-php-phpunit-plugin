@@ -7,7 +7,7 @@ import com.jetbrains.php.lang.psi.elements.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PhpVariable {
+public class PhpVariable implements PhpElement {
 
     private Variable variable;
 
@@ -21,27 +21,23 @@ public class PhpVariable {
         PsiElement cursor = variable;
 
         while (true) {
-            cursor = cursor.getParent();
-            if (cursor == null || cursor instanceof Method) {
+            cursor = PsiTreeUtil.getParentOfType(cursor, GroupStatement.class);
+            if (cursor == null) {
                 break;
             }
 
-            if (!(cursor instanceof Statement)) {
-                continue;
-            }
+            SmartList<AssignmentExpression> statements = new SmartList<>();
+            statements.addAll(PsiTreeUtil.findChildrenOfType(cursor, AssignmentExpression.class));
 
-            SmartList<Statement> statements = new SmartList<Statement>();
-            statements.add((Statement) cursor);
-            statements.addAll(PsiTreeUtil.getChildrenOfTypeAsList(cursor, Statement.class));
+            Variable latestStatementVariable = null;
 
-            for (Statement statement : statements) {
-                AssignmentExpression assignmentExpression = PsiTreeUtil.getChildOfType(statement, AssignmentExpression.class);
-                if (assignmentExpression == null) {
-                    continue;
+            for (AssignmentExpression expression : statements) {
+                if (expression.getTextOffset() > variable.getTextOffset()) {
+                    break;
                 }
 
-                Variable statementVariable = PsiTreeUtil.getChildOfType(assignmentExpression, Variable.class);
-                if (statementVariable == null) {
+                PhpPsiElement statementVariable = expression.getVariable();
+                if (!(statementVariable instanceof Variable)) {
                     continue;
                 }
 
@@ -50,7 +46,11 @@ public class PhpVariable {
                     continue;
                 }
 
-                MethodReference methodReference = PsiTreeUtil.getChildOfType(assignmentExpression, MethodReference.class);
+                latestStatementVariable = (Variable)statementVariable;
+            }
+
+            if (latestStatementVariable != null) {
+                MethodReference methodReference = PsiTreeUtil.findChildOfType(latestStatementVariable.getParent(), MethodReference.class);
                 if (methodReference != null) {
                     return methodReference;
                 }

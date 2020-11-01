@@ -6,7 +6,6 @@ import de.espend.idea.php.phpunit.tests.PhpUnitLightCodeInsightFixtureTestCase;
 
 /**
  * @author Daniel Espendiller <daniel@espendiller.net>
- * @see de.espend.idea.php.phpunit.reference.PhpUnitReferenceContributor
  */
 public class PhpUnitReferenceContributorTest extends PhpUnitLightCodeInsightFixtureTestCase {
     public void setUp() throws Exception {
