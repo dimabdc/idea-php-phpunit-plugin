@@ -32,6 +32,9 @@ public class PhpVariable implements PhpElement {
             Variable latestStatementVariable = null;
 
             for (AssignmentExpression expression : statements) {
+                if (expression.getTextOffset() > variable.getTextOffset()) {
+                    break;
+                }
 
                 PhpPsiElement statementVariable = expression.getVariable();
                 if (!(statementVariable instanceof Variable)) {

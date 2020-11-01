@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 final public class FilterFactory {
 
-    private FilterConfig config;
+    private final FilterConfig config;
 
     private FilterFactory() {
         config = new FilterConfig();

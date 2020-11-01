@@ -62,6 +62,10 @@ public class PhpFieldReference implements PhpElement {
 
         AssignmentExpression lastAssignmentExpressions = null;
         for (AssignmentExpression expression: PsiTreeUtil.findChildrenOfAnyType(groupStatement, AssignmentExpression.class)) {
+            if (expression.getTextOffset() > field.getTextOffset()) {
+                break;
+            }
+
             PhpPsiElement variable = expression.getVariable();
             if (!(variable instanceof FieldReference)) {
                 continue;

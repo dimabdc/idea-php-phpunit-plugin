@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.MultiMap;
 import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.psi.PhpPsiUtil;
 import com.jetbrains.php.lang.psi.elements.*;
 import com.jetbrains.php.lang.psi.elements.impl.PhpClassImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
@@ -38,8 +37,7 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
     @Override
     public PhpType getType(PsiElement element) {
         if(element instanceof FieldReference) {
-            Method method = PhpPsiUtil.getParentByCondition(element, Method.INSTANCEOF);
-            if (method == null || PhpUnitUtil.isTestMethod(method)) {
+            if (!PhpUnitUtil.isPhpUnitTestFile(element.getContainingFile())) {
                 return null;
             }
 
@@ -85,7 +83,7 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature(String expression, Set<String> visited, int depth, Project project) {
-        // split: CLASS|setUp|FIELD_NAME
+        // split: CLASS|FIELD_NAME
         String[] split = expression.split(String.valueOf(TRIM_KEY));
         if(split.length != 2) {
             return null;
@@ -95,29 +93,22 @@ public class SetUpTypeProvider implements PhpTypeProvider4 {
 
         PhpIndex phpIndex = PhpIndex.getInstance(project);
         for (PhpClass phpClass : phpIndex.getAnyByFQN(split[0])) {
-            Method setUp = phpClass.findOwnMethodByName("setUp");
-            if(setUp == null) {
+            if (!PhpUnitUtil.isTestClass(phpClass)) {
                 continue;
             }
 
-            // find field assignments:
-            // $this->foo = $this->createMock();
-            for (AssignmentExpression assignmentExpression : PsiTreeUtil.collectElementsOfType(setUp, AssignmentExpression.class)) {
+            MultiMap<String, AssignmentExpression> accessMap = PhpClassImpl.getPhpUnitSetUpAssignmentsPerField(phpClass);
+            if (!accessMap.containsKey(split[1])) {
+                continue;
+            }
+
+            Collection<AssignmentExpression> expressions = accessMap.get(split[1]);
+            for (AssignmentExpression assignmentExpression : expressions) {
                 PhpPsiElement variable = assignmentExpression.getVariable();
-
-                if(!(variable instanceof FieldReference) || !split[1].equals(variable.getName())) {
-                    continue;
-                }
-
-                // completeType needed for incomplete resolve elements:
-                // getBySignature needs valid signatures
-                Set<String> types = phpIndex.completeType(project, assignmentExpression.getType(), visited).getTypes();
-                for (String s : types) {
-                    if(PhpType.isUnresolved(s)) {
-                        phpNamedElements.addAll(phpIndex.getBySignature(s, visited, depth));
-                    } else {
-                        // \Class\Name
-                        phpNamedElements.addAll(phpIndex.getAnyByFQN(s));
+                if (variable instanceof FieldReference && split[1].equals(variable.getName())) {
+                    Set<String> types = phpIndex.completeType(project, assignmentExpression.getType(), visited).getTypes();
+                    for (String s : types) {
+                        phpNamedElements.addAll(PhpType.isUnresolved(s) ? phpIndex.getBySignature(s, visited, depth) : phpIndex.getAnyByFQN(s));
                     }
                 }
             }

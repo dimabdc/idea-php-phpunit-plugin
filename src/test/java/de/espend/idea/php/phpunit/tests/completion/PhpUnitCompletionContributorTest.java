@@ -159,31 +159,10 @@ public class PhpUnitCompletionContributorTest extends PhpUnitLightCodeInsightFix
 
         configureByText(
             "<?php\n" +
-            "class Foo extends \\PHPUnit\\Framework\\TestCase\n" +
-            "{\n" +
-            "   public function setUp()\n" +
-            "   {\n" +
-            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
-            "   }\n" +
-            "" +
-            "   public function foobar()\n" +
-            "   {\n" +
-            "       $this->foo-><caret>;\n" +
-            "   }\n" +
-            "}"
-        );
-        assertCompletionContains("getFoobar");
-
-        configureByText(
-            "<?php\n" +
             "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
             "{\n" +
             "\n" +
             "   private $foo;\n" +
-            "   public function __construct()\n" +
-            "   {\n" +
-            "       $this->foo = $this->createMock('Foo\\Baz');\n" +
-            "   }\n" +
             "" +
             "   public function setUp()\n" +
             "   {\n" +
@@ -197,9 +176,7 @@ public class PhpUnitCompletionContributorTest extends PhpUnitLightCodeInsightFix
             "}"
         );
         assertCompletionContains("getFoobar");
-    }
 
-    public void testCompletion0() {
         configureByText(
             "<?php\n" +
             "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
@@ -249,6 +226,96 @@ public class PhpUnitCompletionContributorTest extends PhpUnitLightCodeInsightFix
             "       $foo = $this->createMock('Foo\\Bar');\n" +
             "       $this->foo = $foo;\n" +
             "       $this->foo->method('<caret>');\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoobar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "\n" +
+            "   private $foo;\n" +
+            "\n" +
+            "   public function setUp()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
+            "   }\n" +
+            "" +
+            "   public function foobar()\n" +
+            "   {\n" +
+            "       $this->foo-><caret>;\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoobar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "\n" +
+            "   public function testFoobar()\n" +
+            "   {\n" +
+            "       $foo = $this->createMock('Foo\\Bar');\n" +
+            "       $foo->method('<caret>');\n" +
+            "       $foo = $this->createMock('Foo\\Baz');\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoobar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "\n" +
+            "   private $foo;\n" +
+            "\n" +
+            "   public function testFoobar()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
+            "       $this->foo->method('<caret>');\n" +
+            "       $this->foo = $this->createMock('Foo\\Baz');\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoobar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "\n" +
+            "   private $foo;\n" +
+            "" +
+            "   public function testFoobar()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
+            "       $this->foo->method('<caret>');\n" +
+            "   }\n" +
+            "" +
+            "   public function setUp()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Baz');\n" +
+            "   }\n" +
+            "}"
+        );
+        assertCompletionContains("getFoobar");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "{\n" +
+            "\n" +
+            "   private $foo;\n" +
+            "\n" +
+            "   public function setUp()\n" +
+            "   {\n" +
+            "       $this->foo = $this->createMock('Foo\\Bar');\n" +
+            "       $this->foo->method('<caret>');\n" +
+            "       $this->foo = $this->createMock('Foo\\Baz');\n" +
             "   }\n" +
             "}"
         );
