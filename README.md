@@ -75,31 +75,50 @@ class Foo extends \PHPUnit\Framework\TestCase
 ```
 
 ```php
-class FooTest extends \PHPUnit\Framework\TestCase
-    {
-        public function setUp()
-        {
-            $this->foo = $this->prophesize(Foo::class);
-        }
-        public function testFoobar()
-        {
-            $this->foo->getBar()->willReturn();
-        }
-    }
+class Foo extends \PHPUnit\Framework\TestCase
+{
+   public function setUp()
+   {
+       $this->foo = $this->createMock('Foo\Bar');
+   }
+   public function foobar()
+   {
+       $this->foo->bar();
+   }
+}
 ```
 
 ```php
 class FooTest extends \PHPUnit\Framework\TestCase
+{
+    public function setUp()
     {
-        public function setUp()
-        {
-            $this->foo = $this->getMockBuilder(\Foo::class);
-        }
-        public function testFoobar()
-        {
-            $this->foo->getMock()->bar();
-        }
+        $this->foo = $this->prophesize(Foo::class);
     }
+    public function testFoobar()
+    {
+        $this->foo->getBar()->willReturn();
+    }
+}
+```
+
+```php
+class FooTest extends \PHPUnit\Framework\TestCase
+{
+    public function testFoobar()
+    {
+        $foo = $this->getMockBuilder(\Foo::class)
+            ->onlyMethods([
+                'getFoobar',
+            ])
+            ->addMethods([
+                'getFoobaz',
+            ])
+            ->getMock();
+        $foo->expects($this->once())
+           ->method('<caret>');
+    }
+}
 ```
 
 ### Prophecy
@@ -133,13 +152,13 @@ class FooTest extends \PHPUnit\Framework\TestCase
 
 ```php
 class FooTest extends \PHPUnit\Framework\TestCase
+{
+    public function testFoobar()
     {
-        public function testFoobar()
-        {
-            $foo = $this->prophesize(Foo::class);
-            $foo->reveal()->getBar();
-        }
+        $foo = $this->prophesize(Foo::class);
+        $foo->reveal()->getBar();
     }
+}
 ```
 
 ### Intention / Generator
@@ -187,14 +206,14 @@ public function testExpectedException()
 Examples
 --------
 
-![PHPUnit_Framework_MockObject_MockBuilder::setMethods](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16946.png)
+![\PHPUnit\Framework\MockObject\MockBuilder::onlyMethods](https://plugins.jetbrains.com/files/14672/screenshot_23579.png)
 
-![PHPUnit_Framework_MockObject_Builder_InvocationMocker::method](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16945.png)
+![\PHPUnit\Framework\MockObject\MockBuilder::addMethods](https://plugins.jetbrains.com/files/14672/screenshot_23580.png)
 
-![PHPUnit_Framework_MockObject_Builder_InvocationMocker::method](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16944.png)
+![\PHPUnit\Framework\MockObject\Builder\InvocationMocker::method](https://plugins.jetbrains.com/files/14672/screenshot_23581.png)
+
+![\PHPUnit\Framework\MockObject\Builder\InvocationMocker::method](https://plugins.jetbrains.com/files/14672/screenshot_23582.png)
 
 ![PHPUnit Runner LineMarker](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16951.png)
 
 ![PHPUnit Prophecy](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16953.png)
-
-![PHPUnit Expected exception](https://download.plugins.jetbrains.com/9674/screenshot_17449.png)
