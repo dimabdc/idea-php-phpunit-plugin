@@ -217,3 +217,7 @@ Examples
 ![PHPUnit Runner LineMarker](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16951.png)
 
 ![PHPUnit Prophecy](https://jetbrains-plugins.s3.amazonaws.com/9674/screenshot_16953.png)
+
+![Navigation](https://plugins.jetbrains.com/files/14672/screenshot_23583.png)
+
+![Navigation](https://plugins.jetbrains.com/files/14672/screenshot_23584.png)
