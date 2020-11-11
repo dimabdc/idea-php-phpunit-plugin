@@ -22,7 +22,23 @@ namespace Prophecy
 {
     class Argument
     {
+        /**
+         * Matches any single value.
+         *
+         * @return Prophecy\Argument\Token\AnyValueToken
+         */
         public static function any()
+        {
+        }
+
+        /**
+         * Checks that argument is identical value.
+         *
+         * @param mixed $value
+         *
+         * @return Prophecy\Argument\Token\IdenticalValueToken
+         */
+        public static function is()
         {
         }
     }

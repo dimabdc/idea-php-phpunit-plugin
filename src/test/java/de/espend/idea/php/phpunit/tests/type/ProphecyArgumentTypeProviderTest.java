@@ -41,7 +41,20 @@ public class ProphecyArgumentTypeProviderTest extends PhpUnitLightCodeInsightFix
             "        }\n" +
             "        public function testFoobar()\n" +
             "        {\n" +
-            "            $this->foo->getBar(\\Prophecy\\Argument::a<caret>ny());\n" +
+            "            $this->foo->getBar(\\Prophecy\\Argument::i<caret>s());\n" +
+            "        }\n" +
+            "    }"
+        );
+        assertMethodContainsTypes("\\array");
+
+        configureByText(
+            "<?php\n" +
+            "class FooTest extends \\PHPUnit\\Framework\\TestCase\n" +
+            "    {\n" +
+            "        public function testFoobar()\n" +
+            "        {\n" +
+            "            $foo = $this->prophesize(Foo::class);\n" +
+            "            $foo->getBar(\\Prophecy\\Argument::unk<caret>nown());\n" +
             "        }\n" +
             "    }"
         );

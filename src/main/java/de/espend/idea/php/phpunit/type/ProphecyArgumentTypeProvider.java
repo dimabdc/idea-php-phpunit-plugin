@@ -11,7 +11,6 @@ import de.espend.idea.php.phpunit.type.utils.PhpTypeProviderUtil;
 import de.espend.idea.php.phpunit.utils.PhpElementsUtil;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -23,11 +22,6 @@ import java.util.Set;
  * @author Daniel Espendiller <daniel@espendiller.net>
  */
 public class ProphecyArgumentTypeProvider implements PhpTypeProvider4 {
-    private static final Collection<String> METHODS = Arrays.asList(
-        "any",
-        "cetera" // fill arguments, we can not fix magic arguments here, but the type
-    );
-
     private static final String PROPHECY_ARGUMENT_CLASS = "\\Prophecy\\Argument";
     private static final char TRIM_KEY = '\u1539';
 
@@ -39,7 +33,7 @@ public class ProphecyArgumentTypeProvider implements PhpTypeProvider4 {
     @Nullable
     @Override
     public PhpType getType(PsiElement psiElement) {
-        if(!(psiElement instanceof MethodReference) || !((MethodReference) psiElement).isStatic() || !METHODS.contains(((MethodReference) psiElement).getName())) {
+        if(!(psiElement instanceof MethodReference) || !((MethodReference) psiElement).isStatic()) {
             return null;
         }
 
